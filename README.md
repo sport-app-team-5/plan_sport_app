@@ -1,4 +1,4 @@
-# User SportApp
+# Plan SportApp
 
 This is a user management platform
 
