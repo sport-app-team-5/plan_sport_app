@@ -8,8 +8,6 @@ from app.modules.session.domain.repository import RegisterSessionRepository, Sta
 
 
 class StartSessionRepositoryPostgres(StartSessionRepository):
-    def get_by_id(self, entity_id: int, db: Session) -> StartSportsSessionResponseModel:
-        raise NotImplementedError
 
     def get_all(self, db: Session) -> List[StartSportsSessionResponseModel]:
         try:
@@ -28,8 +26,27 @@ class StartSessionRepositoryPostgres(StartSessionRepository):
             print(str(e))
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
+    def get_by_id(self, entity_id: int, db: Session) -> StartSportsSessionResponseModel:
+        try:
+            session = db.query(SportsSession).filter(SportsSession.id == entity_id).first()
+            if session:
+                return session
+            else:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Session not found")
+        except SQLAlchemyError as e:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
     def update(self, entity_id: int, entity: SportsSession, db: Session) -> StartSportsSessionResponseModel:
-        raise NotImplementedError
+        try:
+            session = db.query(SportsSession).filter(SportsSession.id == entity_id).first()
+            if session:
+                session.description = entity.description
+                db.commit()
+                return session
+            else:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Session not found")
+        except SQLAlchemyError as e:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
     def delete(self, entity_id: int, db: Session) -> StartSportsSessionResponseModel:
         raise NotImplementedError
@@ -86,3 +103,4 @@ class RegisterSessionRepositoryPostgres(RegisterSessionRepository):
 
     def delete(self, entity_id: int, db: Session) -> RegisterSportsSessionResponseModel:
         raise NotImplementedError
+    
