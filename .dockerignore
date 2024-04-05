@@ -56,4 +56,4 @@ alembic.ini.example
 .pytest_cache
 .env
 .env.example
-app/config/env.py
+env.py
