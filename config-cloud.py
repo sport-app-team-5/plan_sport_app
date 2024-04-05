@@ -1,4 +1,4 @@
-from app.seedwork.infraestructura.utils import get_secrets
+from app.seedwork.infrastructure.utils import get_secrets
 
 secrets = get_secrets()
 
