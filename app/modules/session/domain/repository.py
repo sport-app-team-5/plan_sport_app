@@ -1,5 +1,5 @@
 from abc import ABC
-from app.seedwork.dominio.repositories import Repository
+from app.seedwork.domain.repositories import Repository
 
 class StartSessionRepository(Repository, ABC):
     ...

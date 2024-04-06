@@ -23,7 +23,7 @@ def __app() -> Generator[FastAPI, Any, None]:
 
 
 @pytest.fixture(scope="function")
-def db() -> Generator[SessionTesting, Any, None]:
+def db() -> Generator[SessionTesting, Any, None]: # type: ignore
     connection = engine.connect()
     transaction = connection.begin()
     session = SessionTesting(bind=connection)
@@ -34,7 +34,7 @@ def db() -> Generator[SessionTesting, Any, None]:
 
 
 @pytest.fixture(scope="function")
-def client(__app: FastAPI, db: SessionTesting) -> Generator[TestClient, Any, None]:
+def client(__app: FastAPI, db: SessionTesting) -> Generator[TestClient, Any, None]: # type: ignore
     def __get_test_db():
         yield db
 

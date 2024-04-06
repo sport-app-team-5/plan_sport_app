@@ -1,7 +1,7 @@
 from typing import Annotated
 from fastapi import Depends, HTTPException, status
 from fastapi.security import SecurityScopes
-from app.seedwork.dominio.services import Service
+from app.seedwork.domain.services import Service
 from app.seedwork.presentation.jwt import oauth2_scheme, decode_token
 
 

@@ -1,2 +1,2 @@
 from .session_router import session_router
-from .health_check_router import health_check_router
+from .sport_men_router import sport_men_router

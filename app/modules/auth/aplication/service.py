@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.modules.auth.aplication.dto import TokenResponse
 from app.modules.auth.domain.repository import AuthRepository
 from app.modules.auth.infrastructure.factories import RepositoryFactory
-from app.seedwork.aplicacion.services import Service
+from app.seedwork.application.services import Service
 
 
 

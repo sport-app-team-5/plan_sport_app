@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from .exceptions import ImplementationNotExistForFabricTypeException
-from app.seedwork.dominio.factories import Factory
+from app.seedwork.domain.factories import Factory
 from .repository import AuthRepositoryPostgres
 from ..domain.repository import AuthRepository
 
