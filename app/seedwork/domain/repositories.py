@@ -20,8 +20,3 @@ class Repository(ABC):
     @abstractmethod
     def update(self, entity_id: int, entity: Entity, db: Session) -> Entity:
         ...
-
-    @abstractmethod
-    def delete(self, entity_id: int, db: Session) -> Entity:
-        ...
-    
