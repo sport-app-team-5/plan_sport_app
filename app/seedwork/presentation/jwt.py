@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
@@ -12,7 +12,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/login")
 
 def create_access_token(data: dict, expires_delta: timedelta = timedelta(days=ACCESS_TOKEN_EXPIRE_DAYS)) -> str:
     _data_to_encode = data.copy()
-    _expire = datetime.utcnow() + expires_delta
+    _expire = datetime.now(timezone.utc) + expires_delta
     _data_to_encode.update({"exp": _expire})
 
     return encode_token(_data_to_encode)
