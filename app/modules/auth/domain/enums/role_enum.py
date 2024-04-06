@@ -18,3 +18,4 @@ class RoleEnum(str, Enum):
             if member.value == code:
                 return member.desc
         return None
+
