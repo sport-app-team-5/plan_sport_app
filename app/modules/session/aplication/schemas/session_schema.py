@@ -1,9 +1,9 @@
 from typing import Optional
 from pydantic import BaseModel, ConfigDict, EmailStr
-from app.seedwork.dominio.entities import Entity
+from app.seedwork.domain.entities import Entity
 
 class StartSportsSessionRequestModel(BaseModel):
-    id: str = None
+    id: Optional[str] = None
     description: str
 
     model_config = ConfigDict(json_schema_extra={
@@ -18,7 +18,7 @@ class StartSportsSessionResponseModel(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 class RegisterSportsSessionModel(BaseModel):
-    id: int = None
+    id:  Optional[int] = None
     session_id: str
     indicators_id: int
     value: float
@@ -32,9 +32,9 @@ class RegisterSportsSessionModel(BaseModel):
 
 class RegisterSportsSessionResponseModel(BaseModel):
     id: int
-    session_id: str = None
-    indicators_id: int = None
-    value: float = None
+    session_id:  Optional[str] = None
+    indicators_id:  Optional[int] = None
+    value:  Optional[float] = None
     
     model_config = ConfigDict(from_attributes=True)
 
