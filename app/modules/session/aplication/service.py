@@ -7,7 +7,6 @@ from app.modules.session.infrastructure.factories import RepositoryFactory
 from app.seedwork.application.services import Service
 import uuid
 import boto3
-from config import settings 
 
 class SessionService(Service):
     def __init__(self):

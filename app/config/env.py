@@ -4,13 +4,13 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-class Setting:
+class Env:
     PROJECT_NAME: str = "Plan SportApp"
     PROJECT_VERSION: str = "1.0.0"
     DB_ENGINE: str = "postgresql"
 
     SECRET_KEY: str = os.getenv("SECRET_KEY", "secret")
-    ENV: str = os.getenv("ENV", "local")
+    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "local")
 
     DB_USER: str = os.getenv("DB_USER")
     DB_PASSWORD: str = os.getenv("DB_PASSWORD")
@@ -23,4 +23,5 @@ class Setting:
     AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
     TOPIC_ARN = os.getenv('TOPIC_ARN')
 
-settings = Setting
+
+env = Env
