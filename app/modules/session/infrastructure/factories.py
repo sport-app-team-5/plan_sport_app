@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-from app.seedwork.dominio.exceptions import FactoryException
-from app.seedwork.dominio.factories import Factory
-from app.seedwork.dominio.repositories import Repository
+from app.seedwork.domain.exceptions import FactoryException
+from app.seedwork.domain.factories import Factory
+from app.seedwork.domain.repositories import Repository
 from .repository import RegisterSessionRepositoryPostgres, StartSessionRepositoryPostgres, StopSessionRepositoryPostgres
 from ..domain.repository import RegisterSessionRepository, StartSessionRepository, StopSessionRepository
 

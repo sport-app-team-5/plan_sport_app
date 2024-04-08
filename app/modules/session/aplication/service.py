@@ -4,10 +4,9 @@ from app.modules.session.aplication.schemas import RegisterSportsSessionResponse
 from app.modules.session.aplication.schemas.session_schema import RegisterSportsSessionModel, StopSportsSessionRequestModel
 from app.modules.session.domain.repository import RegisterSessionRepository, StartSessionRepository, StopSessionRepository
 from app.modules.session.infrastructure.factories import RepositoryFactory
-from app.seedwork.aplicacion.services import Service
+from app.seedwork.application.services import Service
 import uuid
 import boto3
-from config import settings 
 
 class SessionService(Service):
     def __init__(self):

@@ -1,26 +1,14 @@
-import os
-import sys
+import uuid
 from typing import Any
 from typing import Generator
 import pytest
-from fastapi import FastAPI, APIRouter
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from fastapi import FastAPI
 from app.config.db import Base, get_db
-from app.api.session_router import session_router
-
-
-def start_application():
-    app = FastAPI()
-
-    api_v1 = APIRouter()
-    api_v1.include_router(session_router)
-    app.include_router(api_v1)
-    return app
-
+from app.main import app
+from app.modules.auth.domain.service import AuthService
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test_db.db"
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
@@ -28,15 +16,14 @@ SessionTesting = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 @pytest.fixture(scope="function")
-def app() -> Generator[FastAPI, Any, None]:
+def __app() -> Generator[FastAPI, Any, None]:
     Base.metadata.create_all(engine)
-    _app = start_application()
-    yield _app
+    yield app
     Base.metadata.drop_all(engine)
 
 
 @pytest.fixture(scope="function")
-def db_session(app: FastAPI) -> Generator[SessionTesting, Any, None]:
+def db() -> Generator[SessionTesting, Any, None]: # type: ignore
     connection = engine.connect()
     transaction = connection.begin()
     session = SessionTesting(bind=connection)
@@ -47,14 +34,21 @@ def db_session(app: FastAPI) -> Generator[SessionTesting, Any, None]:
 
 
 @pytest.fixture(scope="function")
-def client(app: FastAPI, db_session: SessionTesting) -> Generator[TestClient, Any, None]:
-    def _get_test_db():
-        try:
-            yield db_session
-        finally:
-            pass
+def client(__app: FastAPI, db: SessionTesting) -> Generator[TestClient, Any, None]: # type: ignore
+    def __get_test_db():
+        yield db
 
-    app.dependency_overrides[get_db] = _get_test_db
+    def __authorized():
+        pass
 
-    with TestClient(app) as client:
+    # noinspection PyUnresolvedReferences
+    app.dependency_overrides.update({get_db: __get_test_db, AuthService.authorized: __authorized})
+
+    with TestClient(__app) as client:
         yield client
+
+
+@pytest.fixture
+def headers() -> dict:
+    uuid_token = uuid.uuid4()
+    return {"Authorization": f"Bearer {uuid_token}"}
