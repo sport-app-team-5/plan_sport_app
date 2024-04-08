@@ -8,4 +8,4 @@ class Config(BaseSettings):
 
 settings = Config()
 
-app_configs: dict[str, Any] = {"title": "plan Sport API"}
+app_configs: dict[str, Any] = {"title": "Plan Sport API"}
