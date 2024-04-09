@@ -6,8 +6,8 @@ from app.modules.sport_man.aplication.dto import SportsManRequestDTO, SportsManR
 from app.modules.sport_man.aplication.service import SportsManService
 
 sport_men_router = APIRouter(
-    prefix='/sport_men',
-    tags=["SportMen"]
+    prefix='/sports_men',
+    tags=["Sports Men"]
 )
 
 
