@@ -5,7 +5,7 @@ from app.config.env import env
 
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_DAYS = 7
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="")
 
 
 def decode_token(token: str = Depends(oauth2_scheme)) -> dict:
