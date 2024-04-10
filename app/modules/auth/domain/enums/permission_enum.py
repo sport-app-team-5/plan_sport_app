@@ -26,6 +26,13 @@ class PermissionEnum(str, Enum):
     UPDATE_EVENT = ("Update event", "update", "UEVE")
     DEACTIVATE_EVENT = ("Deactivate event", "deactivate", "DEVE")
 
+    # Acciones y permisos relacionados con las alergias de los deportistas
+    CREATE_ALLERGY_SPORTMAN = ("Create allergy for sportman", "create", "CAS")
+    READ_ALLERGY_SPORTMAN = ("Read allergy for sportman", "read", "RAS")
+    UPDATE_ALLERGY_SPORTMAN = ("Update allergy for sportman", "update", "UAS")
+    DEACTIVATE_ALLERGY_SPORTMAN = ("Deactivate allergy for sportman", "deactivate", "DAS")
+    MANAGE_ALLERGY = ("Manage allergies", "manage", "MAAL")
+    
     def __new__(cls, value, action, code):
         obj = str.__new__(cls)
         obj._value_ = value

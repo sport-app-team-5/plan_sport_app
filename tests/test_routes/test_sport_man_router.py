@@ -1,5 +1,6 @@
 from fastapi import Response
 import pytest
+from app.modules.allergy.domain.entities import Allergy
 from app.modules.sport_man.domain.entities import SportsMan
 
 
@@ -8,6 +9,11 @@ def sport_man_seeders(db) -> None:
     db.add(SportsMan(user_id=1))
     db.commit()
 
+@pytest.fixture
+def allergy_seeders(db) -> None:
+    db.add(Allergy(name="Lactose", description="Allergy to lactose"))
+    db.add(Allergy(name="Gluten", description="Allergy to gluten"))
+    db.commit()
 
 sportsman_data = {
     "user_id": 1,
@@ -45,12 +51,23 @@ class TestSportManRouter:
         assert response.json()["height"] == 185
 
     def test_get_sportsman_by_invalid_id(self, client):
-        response = client.get("/sport_men/99999")
+        response = client.get("/api/v1/sport_men/99999")
         assert response.status_code == 404
 
     def test_update_sportsman_with_invalid_id(self, client):
-        response = client.put("/sport_men/99999", json=sportsman_data)
+        response = client.put("/api/v1/sport_men/99999", json=sportsman_data)
         assert response.status_code == 404
+    
+    # def test_get_sportsmen_positive(self, client, allergy_seeders):
+    #     response = client.get("/api/v1/allergies")
+    #     assert response.status_code == 200
+    #     assert isinstance(response.json(), list)
+
+    # def test_get_sportsmen_validate_len_positive(self, client, allergy_seeders):
+    #     response = client.get("/api/v1/allergies")
+    #     assert response.status_code == 200
+    #     assert isinstance(response.json(), list)
+    #     assert len(response.json()) == 2
 
 
 def create_sportsman(client, headers, sportsman_data) -> Response:
