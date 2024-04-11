@@ -17,15 +17,7 @@ class AllergySportManRepository(Repository, ABC):
         ...
 
     @abstractmethod
-    def get_all(self, db: Session) -> List[AllergySportManResponseDTO]:
-        ...
-
-    @abstractmethod
     def create(self, entity: AllergySportMan, db: Session) -> AllergySportManResponseDTO:
-        ...
-
-    @abstractmethod
-    def update(self, entity_id: int, entity: AllergySportMan, db: Session) -> AllergySportManResponseDTO:
         ...
 
     @abstractmethod

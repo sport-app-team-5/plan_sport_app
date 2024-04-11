@@ -57,18 +57,6 @@ class TestSportManRouter:
     def test_update_sportsman_with_invalid_id(self, client):
         response = client.put("/api/v1/sport_men/99999", json=sportsman_data)
         assert response.status_code == 404
-    
-    # def test_get_sportsmen_positive(self, client, allergy_seeders):
-    #     response = client.get("/api/v1/allergies")
-    #     assert response.status_code == 200
-    #     assert isinstance(response.json(), list)
-
-    # def test_get_sportsmen_validate_len_positive(self, client, allergy_seeders):
-    #     response = client.get("/api/v1/allergies")
-    #     assert response.status_code == 200
-    #     assert isinstance(response.json(), list)
-    #     assert len(response.json()) == 2
-
 
 def create_sportsman(client, headers, sportsman_data) -> Response:
     result = client.post("/api/v1/sports_men", headers=headers, json=sportsman_data)

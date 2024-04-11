@@ -27,10 +27,8 @@ class PermissionEnum(str, Enum):
     DEACTIVATE_EVENT = ("Deactivate event", "deactivate", "DEVE")
 
     # Acciones y permisos relacionados con las alergias de los deportistas
-    CREATE_ALLERGY_SPORTMAN = ("Create allergy for sportman", "create", "CAS")
+    CREATE_NUTRITIONAL_INFORMATION = ("Create nutritional information for sportman", "create", "CAS")
     READ_ALLERGY_SPORTMAN = ("Read allergy for sportman", "read", "RAS")
-    UPDATE_ALLERGY_SPORTMAN = ("Update allergy for sportman", "update", "UAS")
-    DEACTIVATE_ALLERGY_SPORTMAN = ("Deactivate allergy for sportman", "deactivate", "DAS")
     MANAGE_ALLERGY = ("Manage allergies", "manage", "MAAL")
     
     def __new__(cls, value, action, code):

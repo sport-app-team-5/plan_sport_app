@@ -1,4 +1,7 @@
+from typing import List
 from pydantic import ConfigDict, BaseModel
+
+from app.modules.sport_man.domain.enum.food_preference_enum import FoodPreference
 
     
 class AllergyDTO(BaseModel):
@@ -34,5 +37,15 @@ class AllergySportManResponseDTO(BaseModel):
             "example": {
                 "sportsman_id": 1,
                 "allergy_id": 1
+            }
+        })
+class NutritionalInformationRequestDTO(BaseModel):
+    allergies: List[int]
+    food_preference: FoodPreference
+
+    model_config = ConfigDict(json_schema_extra={
+            "example": {
+                "allergies": [1, 2],
+                "food_preference": "VEGAN"
             }
         })

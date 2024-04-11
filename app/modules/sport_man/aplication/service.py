@@ -26,11 +26,3 @@ class SportsManService:
     def update_sportsmen(self, sportsman_id: int, sportsman_data: SportsManRequestDTO, db: Session) -> SportsManResponseDTO:
         repository = self._repository_factory.create_object(UserRepository)
         return repository.update(sportsman_id, sportsman_data, db)
-
-class AllergiesSportManService:
-    def __init__(self):
-        self._repository_factory = RepositoryFactory()
-
-    def get_allergies(self, db: Session) -> List[AllergyDTO]:
-        repository = self._repository_factory.create_object(AllergyRepository)
-        return repository.get_all(db)
