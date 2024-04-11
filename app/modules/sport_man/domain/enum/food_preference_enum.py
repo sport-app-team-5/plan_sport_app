@@ -4,3 +4,4 @@ class FoodPreference(Enum):
     CARNIVOROUS = "CARNIVOROUS"
     VEGAN = "VEGAN"
     VEGETARIAN = "VEGETARIAN"
+    NONE = "NONE"
