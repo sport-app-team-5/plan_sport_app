@@ -48,13 +48,13 @@ class TestNutritionalInformationRouter:
             assert "sportsman_id" in item
 
     def test_get_nutritional_information_by_invalid_sport_man_id(self, client, headers):
-        response = client.get("/api/v1/nutritional_information/99999", headers=headers)
+        response = client.get("/api/v1/auth/nutritional_information/99999", headers=headers)
         assert response.status_code == 404
 
 def create_nutritional_information(client, headers, sport_man_id, nutritional_information_data) -> Response:
-    result = client.post(f"/api/v1/nutritional_information/{sport_man_id}", headers=headers, json=nutritional_information_data)
+    result = client.post(f"/api/v1/auth/nutritional_information/{sport_man_id}", headers=headers, json=nutritional_information_data)
     return result
 
 def get_nutritional_information_by_sport_man_id(client, sport_man_id, headers) -> Response:
-    result = client.get(f"/api/v1/nutritional_information/{sport_man_id}", headers=headers)
+    result = client.get(f"/api/v1/auth/nutritional_information/{sport_man_id}", headers=headers)
     return result

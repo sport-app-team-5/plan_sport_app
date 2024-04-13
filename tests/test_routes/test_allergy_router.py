@@ -19,5 +19,5 @@ class TestAllergyRouter:
         ]
 
 def get(client, headers) -> Response:
-    result = client.get("/api/v1/allergies", headers=headers)
+    result = client.get("/api/v1/auth/allergies", headers=headers)
     return result

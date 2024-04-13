@@ -51,28 +51,28 @@ class TestSportManRouter:
         assert response.json()["height"] == 185
 
     def test_get_sportsman_by_invalid_id(self, client):
-        response = client.get("/api/v1/sport_men/99999")
+        response = client.get("/api/v1/auth/sport_men/99999")
         assert response.status_code == 404
 
     def test_update_sportsman_with_invalid_id(self, client):
-        response = client.put("/api/v1/sport_men/99999", json=sportsman_data)
+        response = client.put("/api/v1/auth/sport_men/99999", json=sportsman_data)
         assert response.status_code == 404
 
 def create_sportsman(client, headers, sportsman_data) -> Response:
-    result = client.post("/api/v1/sports_men", headers=headers, json=sportsman_data)
+    result = client.post("/api/v1/auth/sports_men", headers=headers, json=sportsman_data)
     return result
 
 
 def get_sportsman(client, headers) -> Response:
-    result = client.get("/api/v1/sports_men", headers=headers)
+    result = client.get("/api/v1/auth/sports_men", headers=headers)
     return result
 
 
 def get_sportsman_by_user_id(client, user_id, headers) -> Response:
-    result = client.get(f"/api/v1/sports_men/{user_id}", headers=headers)
+    result = client.get(f"/api/v1/auth/sports_men/{user_id}", headers=headers)
     return result
 
 
 def update_sportsman(client, headers, sportsman_id, sportsman_data) -> Response:
-    result = client.put(f"/api/v1/sports_men/{sportsman_id}", headers=headers, json=sportsman_data)
+    result = client.put(f"/api/v1/auth/sports_men/{sportsman_id}", headers=headers, json=sportsman_data)
     return result
