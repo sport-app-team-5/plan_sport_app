@@ -1,5 +1,7 @@
 from typing import List
 from sqlalchemy.orm import Session
+from app.modules.allergy.aplication.dto import AllergyDTO
+from app.modules.allergy.domain.repository import AllergyRepository
 from app.modules.sport_man.aplication.dto import SportsManRequestDTO, SportsManResponseDTO
 from app.modules.sport_man.domain.repository import UserRepository
 from app.modules.sport_man.infrastructure.factories import RepositoryFactory
