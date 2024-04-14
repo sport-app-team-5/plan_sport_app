@@ -2,7 +2,7 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config.api import app_configs
-from app.api.v1.router import private_router as private_v1
+from app.api.v1.router import private_router as private_v1, public_router as public_v1
 
 logging.basicConfig(level=logging.ERROR, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -16,3 +16,4 @@ async def health() -> dict[str, str]:
 
 
 app.include_router(private_v1, prefix="/api/v1")
+app.include_router(public_v1, prefix="/api/v1")
