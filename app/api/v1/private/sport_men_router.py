@@ -2,12 +2,17 @@ from typing import List
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from app.config.db import get_db
+from app.modules.auth.domain.service import AuthService
 from app.modules.sport_man.aplication.dto import SportsManRequestDTO, SportsManResponseDTO
 from app.modules.sport_man.aplication.service import SportsManService
+from app.seedwork.presentation.jwt import oauth2_scheme
 
+auth_service = AuthService()
+authorized = auth_service.authorized
 sport_men_router = APIRouter(
-    prefix='/sport_men',
-    tags=["SportMen"]
+    prefix='/sports_men',
+    tags=["Sports Men"],
+    dependencies=[Depends(oauth2_scheme)]
 )
 
 
