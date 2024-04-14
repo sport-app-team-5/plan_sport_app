@@ -9,11 +9,13 @@ def sport_man_seeders(db) -> None:
     db.add(SportsMan(user_id=1))
     db.commit()
 
+
 @pytest.fixture
 def allergy_seeders(db) -> None:
     db.add(Allergy(name="Lactose", description="Allergy to lactose"))
     db.add(Allergy(name="Gluten", description="Allergy to gluten"))
     db.commit()
+
 
 sportsman_data = {
     "user_id": 1,
@@ -58,8 +60,9 @@ class TestSportManRouter:
         response = client.put("/api/v1/auth/sport_men/99999", json=sportsman_data)
         assert response.status_code == 404
 
+
 def create_sportsman(client, headers, sportsman_data) -> Response:
-    result = client.post("/api/v1/auth/sports_men", headers=headers, json=sportsman_data)
+    result = client.post("/api/v1/sports_men", headers=headers, json=sportsman_data)
     return result
 
 
