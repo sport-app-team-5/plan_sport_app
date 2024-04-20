@@ -4,6 +4,7 @@ from app.modules.session.aplication.schemas import RegisterSportsSessionResponse
 from app.modules.session.aplication.schemas.session_schema import RegisterSportsSessionModel, StopSportsSessionRequestModel
 from app.modules.session.domain.repository import RegisterSessionRepository, StartSessionRepository, StopSessionRepository
 from app.modules.session.infrastructure.factories import RepositoryFactory
+from app.modules.sport_man.aplication.service import SportsManService
 from app.seedwork.application.services import Service
 import uuid
 import boto3
@@ -16,10 +17,12 @@ class SessionService(Service):
     def repository_factory(self):
         return self._repository_factory
 
-    def start(self, model: StartSportsSessionRequestModel, db: Session) -> StartSportsSessionResponseModel:
+    def start(self, model: StartSportsSessionRequestModel, db: Session, user_id: int) -> StartSportsSessionResponseModel:
         repository = self.repository_factory.create_object(StartSessionRepository)
         model.id = str(uuid.uuid4())
-        return repository.create(model, db)
+        sport_service = SportsManService()
+        sportman = sport_service.get_sportsmen_by_id(user_id, db)
+        return repository.create(model, db, sportman.id)
     
     def send_to_pub_sub(self, message: StopSportsSessionRequestModel, topic: str):
         try:
