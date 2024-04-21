@@ -47,6 +47,12 @@ class TestNutritionalInformationRouter:
         for item in data:
             assert "sportsman_id" in item
 
+    def test_get_nutritional_information_by_user_id(self, client, headers, sport_man_seeders, allergy_seeders, allergy_sport_man_seeders):
+        response = get_nutritional_information_by_user_id(client, headers=headers)
+        assert response.status_code == 200
+        data = response.json()            
+        assert "food_preference" in data
+        
     def test_get_nutritional_information_by_invalid_sport_man_id(self, client, headers):
         response = client.get("/api/v1/auth/nutritional_information/99999", headers=headers)
         assert response.status_code == 404
@@ -57,4 +63,8 @@ def create_nutritional_information(client, headers, sport_man_id, nutritional_in
 
 def get_nutritional_information_by_sport_man_id(client, sport_man_id, headers) -> Response:
     result = client.get(f"/api/v1/auth/nutritional_information/{sport_man_id}", headers=headers)
+    return result
+
+def get_nutritional_information_by_user_id(client, headers) -> Response:
+    result = client.get("/api/v1/auth/nutritional_information", headers=headers)
     return result
