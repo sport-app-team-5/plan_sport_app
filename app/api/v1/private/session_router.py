@@ -7,7 +7,7 @@ from app.modules.session.aplication.schemas import StartSportsSessionRequestMode
 from app.modules.session.aplication.schemas.session_schema import RegisterSportsSessionModel, \
     StopSportsSessionRequestModel
 from app.modules.session.aplication.service import SessionService
-from app.seedwork.presentation.jwt import oauth2_scheme
+from app.seedwork.presentation.jwt import get_current_user_id, oauth2_scheme
 
 auth_service = AuthService()
 authorized = auth_service.authorized
@@ -20,8 +20,8 @@ session_router = APIRouter(
 
 @session_router.post("/start", response_model=StartSportsSessionRequestModel,
                      dependencies=[Security(authorized, scopes=[PermissionEnum.MANAGE_SESSION.code])])
-async def start(model: StartSportsSessionRequestModel, db: Session = Depends(get_db)):
-    session = SessionService().start(model, db)
+async def start(model: StartSportsSessionRequestModel, db: Session = Depends(get_db), user_id: int = Depends(get_current_user_id)):
+    session = SessionService().start(model, db, user_id)
     return session
 
 

@@ -16,9 +16,9 @@ class StartSessionRepositoryPostgres(StartSessionRepository):
         except SQLAlchemyError as e:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
-    def create(self, entity: SportsSession, db: Session) -> StartSportsSessionResponseModel:
+    def create(self, entity: SportsSession, db: Session, user_id: int) -> StartSportsSessionResponseModel:
         try:
-            new_sesion = SportsSession(id=entity.id, description=entity.description, status="started")
+            new_sesion = SportsSession(id=entity.id, status="started", sportsman_id=user_id, training_plan_id=entity.training_plan_id)
             db.add(new_sesion)
             db.commit()
             return new_sesion
@@ -40,7 +40,7 @@ class StartSessionRepositoryPostgres(StartSessionRepository):
         try:
             session = db.query(SportsSession).filter(SportsSession.id == entity_id).first()
             if session:
-                session.description = entity.description
+                session.time = entity.time
                 db.commit()
                 return session
             else:
@@ -67,7 +67,7 @@ class StopSessionRepositoryPostgres(StopSessionRepository):
 
     def update(self, entity_id: int, entity: SportsSession, db: Session) -> StopSportsSessionResponseModel:
         try:        
-            update = db.query(SportsSession).filter(SportsSession.id == entity_id).update({SportsSession.status: "stopped"})
+            update = db.query(SportsSession).filter(SportsSession.id == entity_id).update({SportsSession.status: "stopped", SportsSession.time: entity.time})
             db.commit()
             return entity
         except SQLAlchemyError as e:
