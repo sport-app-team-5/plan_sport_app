@@ -68,11 +68,6 @@ class NutritionalInformationService:
 
         allergies = allergies_sport_men_service.get_allergies_by_sport_man_id(sport_man_id, db)    
 
-        # allergies_result = List[AllergyDescDTO]()
-
-        # for  allergy in allergies:    
-        #    allergies_result.append(allergies_service.get_allergies_by_id(allergy.id, db))  
-
         nutritional_information = NutritionalInformationResponseDTO()
         nutritional_information.sportsman_id = sport_man_id
         nutritional_information.allergies = allergies
