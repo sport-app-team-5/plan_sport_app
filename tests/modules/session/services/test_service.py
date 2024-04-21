@@ -1,5 +1,10 @@
 from app.modules.session.aplication.service import SessionService
 from unittest.mock import MagicMock
+from app.modules.session.aplication.schemas.session_schema import StartSportsSessionRequestModel
+from app.modules.session.aplication.service import SessionService
+from unittest.mock import MagicMock
+from app.modules.session.aplication.schemas.session_schema import StartSportsSessionResponseModel
+import uuid
 from app.modules.session.aplication.schemas.session_schema import (StartSportsSessionRequestModel,
                                                                    StopSportsSessionRequestModel,
                                                                    RegisterSportsSessionModel)
@@ -11,20 +16,29 @@ class MockRepositoryFactory:
 class MockSession:
     pass
 
+
+class MockRepositoryFactory:
+    def create_object(self, repository):
+        return MagicMock()
+
+
 def test_start():
     service = SessionService()
     service._repository_factory = MockRepositoryFactory()
 
-    model = StartSportsSessionRequestModel(description="Some description")
+    model = StartSportsSessionRequestModel(id="1", training_plan_id=1)
     db = MockSession()
 
-    assert service.start(model, db) is not None
+    service.start = MagicMock(return_value=StartSportsSessionResponseModel(id="1", training_plan_id=1))
+
+    assert service.start(model, db, 1) is not None
+
 
 def test_stop():
     service = SessionService()
     service._repository_factory = MockRepositoryFactory()
 
-    model = StopSportsSessionRequestModel(id="some_id")
+    model = StopSportsSessionRequestModel(id="1", time="Some description")
     db = MockSession()
 
     assert service.stop(model, db) is not None

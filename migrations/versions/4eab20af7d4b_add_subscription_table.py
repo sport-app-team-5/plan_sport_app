@@ -15,7 +15,7 @@ from app.modules.sport_man.domain.enum.subscription_type_enum import Subscriptio
 
 # revision identifiers, used by Alembic.
 revision: str = '4eab20af7d4b'
-down_revision: Union[str, None] = 'a1b295e75aed'
+down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

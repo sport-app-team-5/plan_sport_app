@@ -2,7 +2,6 @@ from typing import List
 from pydantic import ConfigDict, BaseModel
 
 from app.modules.sport_man.domain.enum.food_preference_enum import FoodPreference
-
     
 class AllergyDTO(BaseModel):
     id: int
@@ -49,3 +48,14 @@ class NutritionalInformationRequestDTO(BaseModel):
                 "food_preference": "VEGAN"
             }
         })
+    
+class NutritionalInformationResponseDTO():
+    sportsman_id: int
+    allergies: List[AllergyDTO]
+    food_preference: FoodPreference
+
+
+class AllergyDescDTO():
+    id: int
+    description: str
+    name: str

@@ -6,7 +6,7 @@ from app.modules.allergy.aplication.dto import AllergySportManResponseDTO, Nutri
 from app.modules.allergy.aplication.service import AllergiesSportsMenService, NutritionalInformationService
 from app.modules.auth.domain.enums.permission_enum import PermissionEnum
 from app.modules.auth.domain.service import AuthService
-from app.seedwork.presentation.jwt import oauth2_scheme
+from app.seedwork.presentation.jwt import get_current_user_id, oauth2_scheme
 
 auth_service = AuthService()
 authorized = auth_service.authorized
@@ -25,6 +25,14 @@ def get_allergies_by_sport_man_id(sport_man_id: int, db: Session = Depends(get_d
 
 @nutritional_information_router.post("/{sport_man_id}", 
                      dependencies=[Security(authorized, scopes=[PermissionEnum.CREATE_NUTRITIONAL_INFORMATION.code])])
-def create_nutritional_information(sport_man_id: int, nutritional_information: NutritionalInformationRequestDTO, db: Session = Depends(get_db)):
+def create_nutritional_information(user_id: int = Depends(get_current_user_id), 
+                                   nutritional_information: NutritionalInformationRequestDTO = any, 
+                                   db: Session = Depends(get_db)):
     service = NutritionalInformationService()
-    return service.create_nutritional_information(sport_man_id, nutritional_information, db)
+    return service.create_nutritional_information(user_id, nutritional_information, db)
+
+@nutritional_information_router.get("",  
+                                    dependencies=[Security(authorized, scopes=[PermissionEnum.READ_USER.code])])                                    
+def get_nutritional_information(user_id: int = Depends(get_current_user_id), db: Session = Depends(get_db)):
+    service = NutritionalInformationService()
+    return service.get_nutritional_information(user_id, db)
