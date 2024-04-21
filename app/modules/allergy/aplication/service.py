@@ -16,10 +16,6 @@ class AllergiesService:
         repository = self._repository_factory.create_object(AllergyRepository)
         return repository.get_all(db)
     
-    def get_allergies_by_id(self, allergy_id: int, db: Session) -> AllergyDTO:
-        repository = self._repository_factory.create_object(AllergyRepository)
-        return repository.get_by_id(allergy_id, db)
-    
 class AllergiesSportsMenService:
     def __init__(self):
         self._repository_factory = RepositoryFactory()
