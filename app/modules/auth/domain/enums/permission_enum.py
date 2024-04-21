@@ -28,6 +28,7 @@ class PermissionEnum(str, Enum):
 
     # Acciones y permisos relacionados con las alergias de los deportistas
     CREATE_NUTRITIONAL_INFORMATION = ("Create nutritional information for sportman", "create", "CAS")
+    READ_NUTRITIONAL_INFORMATION = ("Read nutritional information for sportman", "read", "RNIS")
     READ_ALLERGY_SPORTMAN = ("Read allergy for sportman", "read", "RAS")
     MANAGE_ALLERGY = ("Manage allergies", "manage", "MAAL")
     

@@ -1,7 +1,7 @@
 from typing import List
 from sqlalchemy.orm import Session
 
-from app.modules.allergy.aplication.dto import AllergyDTO, AllergySportManResponseDTO, AllergySportManRequestDTO, NutritionalInformationRequestDTO
+from app.modules.allergy.aplication.dto import AllergyDTO, AllergySportManResponseDTO, AllergySportManRequestDTO, NutritionalInformationRequestDTO, NutritionalInformationResponseDTO, AllergyDescDTO
 from app.modules.allergy.domain.entities import AllergySportMan
 from app.modules.allergy.domain.repository import AllergyRepository, AllergySportManRepository
 from app.modules.allergy.infrastructure.factories import RepositoryFactory
@@ -15,6 +15,10 @@ class AllergiesService:
     def get_allergies(self, db: Session) -> List[AllergyDTO]:
         repository = self._repository_factory.create_object(AllergyRepository)
         return repository.get_all(db)
+    
+    def get_allergies_by_id(self, allergy_id: int, db: Session) -> AllergyDTO:
+        repository = self._repository_factory.create_object(AllergyRepository)
+        return repository.get_by_id(allergy_id, db)
     
 class AllergiesSportsMenService:
     def __init__(self):
@@ -34,7 +38,13 @@ class AllergiesSportsMenService:
     
 class NutritionalInformationService:
 
-    def create_nutritional_information(self, sport_man_id: int, nutritional_information: NutritionalInformationRequestDTO, db: Session):
+    def create_nutritional_information(self, user_id: int, nutritional_information: NutritionalInformationRequestDTO, db: Session):
+        
+        sports_man_service = SportsManService()
+        sport_man = sports_man_service.get_sportsmen_by_id(user_id, db)
+        sport_man_id = sport_man.id
+        sport_man.user_id = user_id
+
         allergies_sport_men_service = AllergiesSportsMenService()
         allergies_sport_men_service.delete_all_allergies_by_sport_man_id(sport_man_id, db)
         for  allergy_id in nutritional_information.allergies:                
@@ -47,5 +57,25 @@ class NutritionalInformationService:
             sport_man_service = SportsManService()
             sport_man = SportsManRequestDTO(user_id=sport_man_id, food_preference=nutritional_information.food_preference)
             sport_man_service.update_sportsmen(sport_man_id, sport_man, db)
+
+        return nutritional_information
+    
+    def get_nutritional_information(self, user_id: int, db: Session) -> NutritionalInformationResponseDTO:
+        allergies_sport_men_service = AllergiesSportsMenService()
+        sports_man_service = SportsManService()
+        sport_man = sports_man_service.get_sportsmen_by_id(user_id, db)
+        sport_man_id = sport_man.id
+
+        allergies = allergies_sport_men_service.get_allergies_by_sport_man_id(sport_man_id, db)    
+
+        # allergies_result = List[AllergyDescDTO]()
+
+        # for  allergy in allergies:    
+        #    allergies_result.append(allergies_service.get_allergies_by_id(allergy.id, db))  
+
+        nutritional_information = NutritionalInformationResponseDTO()
+        nutritional_information.sportsman_id = sport_man_id
+        nutritional_information.allergies = allergies
+        nutritional_information.food_preference = sport_man.food_preference
 
         return nutritional_information
