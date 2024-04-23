@@ -1,8 +1,7 @@
 from fastapi import Response
 import pytest
 from app.modules.allergy.domain.entities import Allergy
-from app.modules.sport_man.domain.entities import SportsMan
-
+from app.modules.sport_man.domain.entities import SportsMan, Injuries
 
 @pytest.fixture
 def sport_man_seeders(db) -> None:
@@ -15,6 +14,12 @@ def allergy_seeders(db) -> None:
     db.add(Allergy(name="Lactose", description="Allergy to lactose"))
     db.add(Allergy(name="Gluten", description="Allergy to gluten"))
     db.commit()
+    
+@pytest.fixture
+def injuries_seeders(db) -> None:
+    db.add(Injuries(name="Lesion de pie", description="Lesion de pie", severity=1))
+    db.add(Injuries(name="Lesion de muñeca", description="Lesion de muñeca",severity=2))
+    db.commit()
 
 
 sportsman_data = {
@@ -26,7 +31,16 @@ sportsman_data = {
     "weight": 75,
     "body_mass_index": 23.15
 }
-
+sportsman_data_profile_information = {  
+    "height": 10,
+    "weight": 10,
+    "id": 1,
+    "injuries": [
+        1,
+        2
+    ],
+    "sport_preference": "CYCLING"
+}
 
 class TestSportManRouter:
 
@@ -60,6 +74,18 @@ class TestSportManRouter:
         response = client.put("/api/v1/auth/sport_men/99999", json=sportsman_data)
         assert response.status_code == 404
 
+    def test_update_sportman_profile_information(self, client, headers,injuries_seeders, sport_man_seeders):
+        data = {
+            "id": 1,
+            "height": 180,
+            "weight": 75,
+            "birth_year": 1990,
+            "injuries": [1, 2],
+            "sport_preference": "ATHLETICS"
+        }    
+        result = update_sportman_profile_information(client, headers, 1, data)
+        assert result.status_code == 200
+        
 
 def create_sportsman(client, headers, sportsman_data) -> Response:
     result = client.post("/api/v1/sports_men", headers=headers, json=sportsman_data)
@@ -78,4 +104,8 @@ def get_sportsman_by_user_id(client, user_id, headers) -> Response:
 
 def update_sportsman(client, headers, sportsman_id, sportsman_data) -> Response:
     result = client.put(f"/api/v1/auth/sports_men/{sportsman_id}", headers=headers, json=sportsman_data)
+    return result
+
+def update_sportman_profile_information(client, headers, sportsman_id, sportsman_data_profile_information) -> Response:
+    result = client.put(f"/api/v1/auth/sports_men/profile/sport/{sportsman_id}", headers=headers, json=sportsman_data_profile_information)
     return result
