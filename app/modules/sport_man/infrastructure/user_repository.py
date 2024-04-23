@@ -3,11 +3,12 @@ from fastapi import HTTPException, status
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
-from app.modules.sport_man.aplication.dto import SportsManResponseDTO
-from app.modules.sport_man.domain.entities import SportsMan
+from app.modules.sport_man.aplication.dto import SportsManResponseDTO,SportManResponseProfileSportDTO,InjuryResponseDTO
+from app.modules.sport_man.domain.entities import SportsMan, Injuries,SportManInjury
 from app.modules.sport_man.domain.enum.food_preference_enum import FoodPreference
 from app.modules.sport_man.domain.enum.trining_goal_enum import TrainingGoal
 from app.modules.sport_man.domain.repository import UserRepository
+from app.modules.sport_man.domain.enum.sport_preference_enum import SportPreference
 
 
 
@@ -34,6 +35,41 @@ class UserRepositoryPostgres(UserRepository):
             return users
         except SQLAlchemyError as e:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+       
+    def update_sport_profile(self, user_id:int, entity:SportsMan, db: Session) -> SportManResponseProfileSportDTO :
+        try:
+            sport_men = db.query(SportsMan).filter(SportsMan.user_id == user_id).first()
+            if not sport_men:
+                raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='Sports men not exist')
+            altura =  entity.height
+            sport_men.birth_year = entity.birth_year
+            sport_men.height= altura
+            sport_men.weight= entity.weight   
+            if isinstance(entity.sport_preference, SportPreference):             
+                sport_men.sport_preference =entity.sport_preference .value
+           
+            sport_men.body_mass_index= (entity.height)/(altura ** 2)
+            db.add(sport_men)
+            db.commit()
+            return sport_men
+         
+        except SQLAlchemyError as e:
+            db.rollback()
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+    
+    def create_injury(self, id_injury: int, sportman_id:int, db: Session) -> InjuryResponseDTO:
+        try:
+            injury = SportManInjury()
+            injury_db = db.query(SportManInjury).filter(SportManInjury.id_injury==id_injury).first()
+            if not  injury_db:            
+                injury.id_sporman = sportman_id
+                injury.id_injury = id_injury  
+                db.add(injury)
+                db.commit()
+                return injury
+        except SQLAlchemyError as e:
+            db.rollback()
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))    
 
     def create(self, entity: SportsMan, db: Session) -> SportsManResponseDTO:
         try:
