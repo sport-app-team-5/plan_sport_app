@@ -38,7 +38,7 @@ def update_sportsman(sportsman_id: int, sportsman_data: SportsManRequestDTO, db:
 
 
 @sport_men_router.put("/profile/sport/{user_id}", 
-                     dependencies=[Security(authorized, scopes=[PermissionEnum.CREATE_SPORT_MAN_PROFILE_INFORMATION.code])])
+                     dependencies=[Security(authorized, scopes=[PermissionEnum.UPDATE_SPORT_MAN_PROFILE_INFORMATION.code])])
 def update_sportman_profile_information(user_id: int,   sportman_profile_information: SportManRequestProfileSportDTO, 
                                         db: Session = Depends(get_db)):
     service = SportsManService()

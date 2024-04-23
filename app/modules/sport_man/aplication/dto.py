@@ -31,7 +31,7 @@ class SportsManRequestDTO(BaseModel):
                 "height": 180,
                 "weight": 75,
                 "body_mass_index": 25.0,
-                "sport_preference": ""
+                "sport_preference": "ATHLETICS"
             }
         })
 
