@@ -2,9 +2,6 @@ from fastapi import Response
 import pytest
 from app.modules.allergy.domain.entities import Allergy
 from app.modules.sport_man.domain.entities import SportsMan, Injuries
-from unittest.mock import patch
-from app.modules.sport_man.aplication.dto import SportManRequestProfileSportDTO
-# from app.api.v1.private.sport_men_router import  update_sportman_profile_information
 
 @pytest.fixture
 def sport_man_seeders(db) -> None:

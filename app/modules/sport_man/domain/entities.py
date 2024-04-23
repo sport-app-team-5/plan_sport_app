@@ -68,9 +68,7 @@ class SportManInjury(Base):
     id_injury: Mapped[int] = mapped_column(Integer)   
     created_at: Mapped[str] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[str] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    # sportman = relationship("sportsman", foreign_keys=[id_sporman])
-    # injury = relationship("injuries", foreign_keys=[id_injury])    
-    
+        
     def __str__(self):
         return self.name
     
