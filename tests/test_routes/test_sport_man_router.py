@@ -81,10 +81,40 @@ class TestSportManRouter:
             "weight": 75,
             "birth_year": 1990,
             "injuries": [1, 2],
-            "sport_preference": "ATHLETICS"
+            "sport_preference": "ATHLETICS",
+            "exercise_experience":"SI",
+            "time_dedication_sport":"1_3_HOURS"
         }    
         result = update_sportman_profile_information(client, headers, 1, data)
         assert result.status_code == 200
+    
+    def test_update_sportman_profile_information_when_missing_attributes(self, client, headers,injuries_seeders, sport_man_seeders):
+        data = {
+            "id": 1,
+            "height": 180,
+            "weight": 75,
+            "birth_year": 1990,
+            "injuries": [1, 2],
+            "sport_preference": "ATHLETICS",
+            "exercise_experience":"SI"
+           
+        }    
+        result = update_sportman_profile_information(client, headers, 1, data)
+        assert result.status_code == 422  
+        
+    def test_update_sportman_profile_information_when_sport_man_not_exists(self, client, headers,injuries_seeders):
+        data = {
+            "id": 1,
+            "height": 180,
+            "weight": 75,
+            "birth_year": 1990,
+            "injuries": [1, 2],
+            "sport_preference": "ATHLETICS",
+            "exercise_experience":"SI"
+           
+        }    
+        result = update_sportman_profile_information(client, headers, 1, data)
+        assert result.status_code == 422       
         
 
 def create_sportsman(client, headers, sportsman_data) -> Response:

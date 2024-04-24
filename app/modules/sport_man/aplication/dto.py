@@ -4,7 +4,7 @@ from typing import List
 from app.modules.sport_man.domain.enum.food_preference_enum import FoodPreference
 from app.modules.sport_man.domain.enum.subscription_type_enum import SubscriptionType
 from app.modules.sport_man.domain.enum.trining_goal_enum import TrainingGoal
-from app.modules.sport_man.domain.enum.sport_preference_enum import SportPreference
+from app.modules.sport_man.domain.enum.sport_preference_enum import SportPreference, SporExperience,SportDedication
 
 
 
@@ -85,7 +85,8 @@ class SportManRequestProfileSportDTO(BaseModel):
     birth_year: int   
     injuries: List[int]
     sport_preference: SportPreference
-
+    exercise_experience: SporExperience
+    time_dedication_sport: SportDedication
     model_config = ConfigDict(json_schema_extra={
             "example": {
                 "id":1,
