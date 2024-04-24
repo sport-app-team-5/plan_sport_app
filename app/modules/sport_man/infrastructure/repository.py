@@ -104,7 +104,6 @@ class UserRepositoryPostgres(UserRepository):
 
     def update(self, entity_id: int, entity: SportsMan, db: Session) -> SportsManResponseDTO:
         try:
-
             sportsman = db.query(SportsMan).filter(SportsMan.id == entity_id).first()
 
             if sportsman:
@@ -125,10 +124,9 @@ class UserRepositoryPostgres(UserRepository):
                 return sportsman
             else:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Sport men not found")
-
         except SQLAlchemyError as e:
             db.rollback()
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+            raise HTTPException(status_code=status.HTTP_502_INTERNAL_SERVER_ERROR, detail=str(e))
 
     def get_sports_profile(self, user_id: int, db: Session) -> SportManResponseProfileDTO:
         try:
@@ -140,7 +138,5 @@ class UserRepositoryPostgres(UserRepository):
             return SportManResponseProfileDTO(sport_preference=sports_men.sport_preference, injuries=injuries,
                                               exercise_experience=sports_men.exercise_experience,
                                               time_dedication_sport=sports_men.time_dedication_sport)
-
         except SQLAlchemyError as e:
-            db.rollback()
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+            raise HTTPException(status_code=status.HTTP_502_INTERNAL_SERVER_ERROR, detail=str(e))
