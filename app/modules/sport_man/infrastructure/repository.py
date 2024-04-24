@@ -3,7 +3,7 @@ from fastapi import HTTPException, status
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from app.modules.sport_man.aplication.dto import SportsManResponseDTO, SportManResponseProfileSportDTO, \
-    InjuryResponseDTO
+    InjuryResponseDTO, SportManResponseProfileDTO
 from app.modules.sport_man.domain.entities import SportsMan, Injuries, SportManInjury
 from app.modules.sport_man.domain.enum.food_preference_enum import FoodPreference
 from app.modules.sport_man.domain.enum.trining_goal_enum import TrainingGoal
@@ -122,10 +122,15 @@ class UserRepositoryPostgres(UserRepository):
             db.rollback()
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
-    def get_sports_profile(self, user_id: int, db: Session):
+    def get_sports_profile(self, user_id: int, db: Session) -> SportManResponseProfileDTO:
         try:
             sports_men = db.query(SportsMan).filter(SportsMan.user_id == user_id).first()
-            return sports_men
+            sport_preference = sports_men.sport_preference
+            injuries = []
+            for injury in sports_men.injuries:
+                injuries.append(injury.injury.name)
+
+            return SportManResponseProfileDTO(sport_preference=sport_preference, injuries=injuries)
 
         except SQLAlchemyError as e:
             db.rollback()

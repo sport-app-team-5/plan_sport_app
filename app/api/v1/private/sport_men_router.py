@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.config.db import get_db
 from app.modules.auth.domain.service import AuthService
 from app.modules.sport_man.aplication.dto import SportsManRequestDTO, SportsManResponseDTO, \
-    SportManRequestProfileSportDTO
+    SportManRequestProfileSportDTO, SportManResponseProfileDTO
 from app.modules.sport_man.aplication.service import SportsManService
 from app.seedwork.presentation.jwt import oauth2_scheme
 from app.modules.auth.domain.enums.permission_enum import PermissionEnum
@@ -46,7 +46,7 @@ def update_sportsman_profile_information(user_id: int, sportsman_profile_informa
     return service.update_sportsman_profile_information(user_id, sportsman_profile_information, db)
 
 
-@sport_men_router.get("/profile/sport/{user_id}")
+@sport_men_router.get("/profile/sport/{user_id}", response_model=SportManResponseProfileDTO)
                       # dependencies=[Security(authorized)])
 def get_sportsman_profile_information(user_id: int, db: Session = Depends(get_db)):
     service = SportsManService()
