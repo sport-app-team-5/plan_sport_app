@@ -6,7 +6,7 @@ from app.modules.auth.domain.service import AuthService
 from app.modules.sport_man.aplication.dto import SportsManRequestDTO, SportsManResponseDTO, \
     SportManRequestProfileSportDTO, SportManResponseProfileDTO
 from app.modules.sport_man.aplication.service import SportsManService
-from app.seedwork.presentation.jwt import oauth2_scheme
+from app.seedwork.presentation.jwt import oauth2_scheme, get_current_user_id
 from app.modules.auth.domain.enums.permission_enum import PermissionEnum
 
 auth_service = AuthService()
@@ -14,7 +14,7 @@ authorized = auth_service.authorized
 sport_men_router = APIRouter(
     prefix='/sports_men',
     tags=["Sports Men"],
-    # dependencies=[Depends(oauth2_scheme)]
+    dependencies=[Depends(oauth2_scheme)]
 )
 
 
@@ -46,8 +46,8 @@ def update_sportsman_profile_information(user_id: int, sportsman_profile_informa
     return service.update_sportsman_profile_information(user_id, sportsman_profile_information, db)
 
 
-@sport_men_router.get("/profile/sport/{user_id}", response_model=SportManResponseProfileDTO)
-                      # dependencies=[Security(authorized)])
-def get_sportsman_profile_information(user_id: int, db: Session = Depends(get_db)):
+@sport_men_router.get("/profile/sport", response_model=SportManResponseProfileDTO,
+                      dependencies=[Security(authorized)])
+def get_sportsman_profile_information(user_id: int = Depends(get_current_user_id), db: Session = Depends(get_db)):
     service = SportsManService()
     return service.get_sportsman_profile(user_id, db)

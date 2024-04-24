@@ -136,4 +136,6 @@ class InjuryResponseDTO(BaseModel):
 class SportManResponseProfileDTO(BaseModel):
     sport_preference: str
     injuries: list
+    exercise_experience: str
+    time_dedication_sport: str
     

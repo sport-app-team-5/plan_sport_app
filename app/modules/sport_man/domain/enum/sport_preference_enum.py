@@ -2,13 +2,13 @@ from enum import Enum
 
 
 class SportPreference(Enum):
-    ATHLETICS = "ATHLETICS"
-    CYCLING = "CYCLING"
+    ATHLETICS = "Atletismo"
+    CYCLING = "Ciclismo"
 
 
 class SporExperience(Enum):
-    SI = "SI"
-    NO = "NO"
+    SI = "Si"
+    NO = "No"
 
 
 class SportDedication(Enum):

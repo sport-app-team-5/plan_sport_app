@@ -18,21 +18,25 @@ nutritional_information_router = APIRouter(
 
 
 @nutritional_information_router.get("/{sport_man_id}", response_model=List[AllergySportManResponseDTO],
-                     dependencies=[Security(authorized, scopes=[PermissionEnum.READ_ALLERGY_SPORTMAN.code])])
+                                    dependencies=[
+                                        Security(authorized, scopes=[PermissionEnum.READ_ALLERGY_SPORTMAN.code])])
 def get_allergies_by_sport_man_id(sport_man_id: int, db: Session = Depends(get_db)):
     service = AllergiesSportsMenService()
     return service.get_allergies_by_sport_man_id(sport_man_id, db)
 
-@nutritional_information_router.post("/{sport_man_id}", 
-                     dependencies=[Security(authorized, scopes=[PermissionEnum.CREATE_NUTRITIONAL_INFORMATION.code])])
-def create_nutritional_information(user_id: int = Depends(get_current_user_id), 
-                                   nutritional_information: NutritionalInformationRequestDTO = any, 
+
+@nutritional_information_router.post("/{sport_man_id}",
+                                     dependencies=[Security(authorized, scopes=[
+                                         PermissionEnum.CREATE_NUTRITIONAL_INFORMATION.code])])
+def create_nutritional_information(user_id: int = Depends(get_current_user_id),
+                                   nutritional_information: NutritionalInformationRequestDTO = any,
                                    db: Session = Depends(get_db)):
     service = NutritionalInformationService()
     return service.create_nutritional_information(user_id, nutritional_information, db)
 
-@nutritional_information_router.get("",  
-                                    dependencies=[Security(authorized, scopes=[PermissionEnum.READ_USER.code])])                                    
+
+@nutritional_information_router.get("",
+                                    dependencies=[Security(authorized, scopes=[PermissionEnum.READ_USER.code])])
 def get_nutritional_information(user_id: int = Depends(get_current_user_id), db: Session = Depends(get_db)):
     service = NutritionalInformationService()
     return service.get_nutritional_information(user_id, db)
