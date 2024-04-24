@@ -54,7 +54,8 @@ class NutritionalInformationService:
             sport_man = SportsManRequestDTO(user_id=sport_man_id, food_preference=nutritional_information.food_preference)
             sport_man_service.update_sportsmen(sport_man_id, sport_man, db)
 
-        return nutritional_information
+        return nutritional_information        
+       
     
     def get_nutritional_information(self, user_id: int, db: Session) -> NutritionalInformationResponseDTO:
         allergies_sport_men_service = AllergiesSportsMenService()

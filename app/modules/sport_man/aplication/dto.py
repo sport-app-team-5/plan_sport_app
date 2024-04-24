@@ -1,9 +1,12 @@
 from typing import Optional
 from pydantic import ConfigDict, BaseModel
-
+from typing import List
 from app.modules.sport_man.domain.enum.food_preference_enum import FoodPreference
 from app.modules.sport_man.domain.enum.subscription_type_enum import SubscriptionType
 from app.modules.sport_man.domain.enum.trining_goal_enum import TrainingGoal
+from app.modules.sport_man.domain.enum.sport_preference_enum import SportPreference
+
+
 
 class SportsManRequestDTO(BaseModel):
     user_id: int
@@ -15,6 +18,8 @@ class SportsManRequestDTO(BaseModel):
     height: Optional[int]  = None
     weight: Optional[int]  = None
     body_mass_index: Optional[float]  = None
+    sport_preference:  Optional[SportPreference]= None
+  
     model_config = ConfigDict(json_schema_extra={
             "example": {
                 "user_id": 1,
@@ -25,7 +30,8 @@ class SportsManRequestDTO(BaseModel):
                 "birth_year": 2000,
                 "height": 180,
                 "weight": 75,
-                "body_mass_index": 25.0
+                "body_mass_index": 25.0,
+                "sport_preference": "ATHLETICS"
             }
         })
 
@@ -41,7 +47,7 @@ class SportsManResponseDTO(BaseModel):
     height: Optional[int]  = None
     weight: Optional[int]  = None
     body_mass_index: Optional[float]  = None
-
+    sport_preference: Optional[SportPreference] = None
     model_config = ConfigDict(from_attributes=True)
 
 class SubscriptionDTO(BaseModel):
@@ -71,3 +77,53 @@ class SportProfileDTO(BaseModel):
                 "training_time": 1.5
             }
         })
+    
+class SportManRequestProfileSportDTO(BaseModel):
+    id: int
+    height: int
+    weight: int
+    birth_year: int   
+    injuries: List[int]
+    sport_preference: SportPreference
+
+    model_config = ConfigDict(json_schema_extra={
+            "example": {
+                "id":1,
+                "height": 10,
+                "weight": 10,
+                "birth_year": 2023,
+                "injuries": [10,11],
+                "sport_preference":"ATHLETICS"
+            }
+        })    
+    
+    
+class SportManResponseProfileSportDTO(BaseModel):
+    id: int
+    height: int
+    weight: int
+    birth_year: int   
+    injuries: List[int]
+    sport_preference: SportPreference
+    
+class InjuryRequestDTO(BaseModel):
+    id:int    
+    name:str   
+    description: str
+    severity: int
+    
+   
+class InjuryResponseDTO(BaseModel):
+    id:int    
+    name:str   
+    description: str
+    severity: int
+
+    model_config = ConfigDict(json_schema_extra={
+            "example": {
+                "id":1,
+                "name": "name",
+                "description":"description",
+                "severity": 1
+            }
+        }) 
