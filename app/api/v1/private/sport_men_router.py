@@ -1,9 +1,10 @@
 from typing import List
-from fastapi import APIRouter, Depends, status,Security
+from fastapi import APIRouter, Depends, status, Security
 from sqlalchemy.orm import Session
 from app.config.db import get_db
 from app.modules.auth.domain.service import AuthService
-from app.modules.sport_man.aplication.dto import SportsManRequestDTO, SportsManResponseDTO,SportManRequestProfileSportDTO
+from app.modules.sport_man.aplication.dto import SportsManRequestDTO, SportsManResponseDTO, \
+    SportManRequestProfileSportDTO
 from app.modules.sport_man.aplication.service import SportsManService
 from app.seedwork.presentation.jwt import oauth2_scheme
 from app.modules.auth.domain.enums.permission_enum import PermissionEnum
@@ -13,7 +14,7 @@ authorized = auth_service.authorized
 sport_men_router = APIRouter(
     prefix='/sports_men',
     tags=["Sports Men"],
-    dependencies=[Depends(oauth2_scheme)]
+    # dependencies=[Depends(oauth2_scheme)]
 )
 
 
@@ -36,12 +37,17 @@ def update_sportsman(sportsman_id: int, sportsman_data: SportsManRequestDTO, db:
     return service.update_sportsmen(sportsman_id, sportsman_data, db)
 
 
-
-@sport_men_router.put("/profile/sport/{user_id}", 
-                     dependencies=[Security(authorized, scopes=[PermissionEnum.UPDATE_SPORT_MAN_PROFILE_INFORMATION.code])])
-def update_sportman_profile_information(user_id: int,   sportman_profile_information: SportManRequestProfileSportDTO, 
-                                        db: Session = Depends(get_db)):
+@sport_men_router.put("/profile/sport/{user_id}",
+                      dependencies=[
+                          Security(authorized, scopes=[PermissionEnum.UPDATE_SPORT_MAN_PROFILE_INFORMATION.code])])
+def update_sportsman_profile_information(user_id: int, sportsman_profile_information: SportManRequestProfileSportDTO,
+                                         db: Session = Depends(get_db)):
     service = SportsManService()
-    return service.update_sportman_profile_information(user_id, sportman_profile_information, db)
+    return service.update_sportsman_profile_information(user_id, sportsman_profile_information, db)
 
 
+@sport_men_router.get("/profile/sport/{user_id}")
+                      # dependencies=[Security(authorized)])
+def get_sportsman_profile_information(user_id: int, db: Session = Depends(get_db)):
+    service = SportsManService()
+    return service.get_sportsman_profile(user_id, db)
