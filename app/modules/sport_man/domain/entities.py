@@ -22,7 +22,8 @@ class SportsMan(Base):
  
     
     body_mass_index: Mapped[float] =  mapped_column(Float, nullable=True)
-
+    exercise_experience: Mapped[str] = mapped_column(String(20), nullable=True)
+    time_dedication_sport: Mapped[str] = mapped_column(String(20), nullable=True)
 
     created_at: Mapped[str] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[str] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
