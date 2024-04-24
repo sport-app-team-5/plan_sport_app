@@ -8,7 +8,7 @@ from app.modules.sport_man.domain.entities import SportsMan, Injuries, SportManI
 from app.modules.sport_man.domain.enum.food_preference_enum import FoodPreference
 from app.modules.sport_man.domain.enum.trining_goal_enum import TrainingGoal
 from app.modules.sport_man.domain.repository import UserRepository
-from app.modules.sport_man.domain.enum.sport_preference_enum import SportPreference
+from app.modules.sport_man.domain.enum.sport_preference_enum import SportPreference,SporExperience,SportDedication
 
 
 class UserRepositoryPostgres(UserRepository):
@@ -42,12 +42,21 @@ class UserRepositoryPostgres(UserRepository):
                 raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='Sports men not exist')
             altura = entity.height
             sport_men.birth_year = entity.birth_year
-            sport_men.height = altura
-            sport_men.weight = entity.weight
-            if isinstance(entity.sport_preference, SportPreference):
-                sport_men.sport_preference = entity.sport_preference.value
-
-            sport_men.body_mass_index = (entity.height) / (altura ** 2)
+            sport_men.height= altura
+            sport_men.weight= entity.weight   
+            sport_men.exercise_experience = entity.exercise_experience
+           
+       
+            if isinstance(entity.sport_preference, SportPreference):             
+                sport_men.sport_preference =entity.sport_preference .value
+            
+            if isinstance(entity.time_dedication_sport, SportDedication):             
+                sport_men.time_dedication_sport =entity.time_dedication_sport .value  
+                
+            if isinstance(entity.exercise_experience, SporExperience):             
+                sport_men.exercise_experience =entity.exercise_experience .value        
+           
+            sport_men.body_mass_index= (entity.height)/(altura ** 2)
             db.add(sport_men)
             db.commit()
             return sport_men
