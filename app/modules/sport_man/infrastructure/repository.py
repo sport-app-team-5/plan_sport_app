@@ -100,7 +100,7 @@ class UserRepositoryPostgres(UserRepository):
             return sportsman
         except SQLAlchemyError as e:
             db.rollback()
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+            raise HTTPException(status_code=500, detail=str(e))
 
     def update(self, entity_id: int, entity: SportsMan, db: Session) -> SportsManResponseDTO:
         try:
@@ -139,4 +139,4 @@ class UserRepositoryPostgres(UserRepository):
                                               exercise_experience=sports_men.exercise_experience,
                                               time_dedication_sport=sports_men.time_dedication_sport)
         except SQLAlchemyError as e:
-            raise HTTPException(status_code=status.HTTP_502_INTERNAL_SERVER_ERROR, detail=str(e))
+            raise HTTPException(status_code=502, detail=str(e))
