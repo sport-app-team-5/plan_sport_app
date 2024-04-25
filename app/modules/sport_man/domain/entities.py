@@ -1,8 +1,8 @@
 from datetime import datetime
+from typing import List
 from sqlalchemy import DateTime, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.config.db import Base
-
 
 
 class SportsMan(Base):
@@ -12,12 +12,10 @@ class SportsMan(Base):
     sport_profile_id: Mapped[int] = mapped_column(ForeignKey("sport_profile.id"), index=True, nullable=True)
     subscription_id: Mapped[int] = mapped_column(ForeignKey("subscription.id"), index=True, nullable=True)
     food_preference: Mapped[str] = mapped_column(String(20), nullable=True)
-    
     sport_preference: Mapped[str] = mapped_column(String(20), nullable=True)
-    
-    birth_year: Mapped[int] =  mapped_column(Integer, nullable=True)
-    height: Mapped[int] =  mapped_column(Integer, nullable=True)
-    weight: Mapped[int] =  mapped_column(Integer, nullable=True)
+    birth_year: Mapped[int] = mapped_column(Integer, nullable=True)
+    height: Mapped[int] = mapped_column(Integer, nullable=True)
+    weight: Mapped[int] = mapped_column(Integer, nullable=True)
     training_goal: Mapped[str] = mapped_column(String(20), nullable=True)
  
     
@@ -29,59 +27,61 @@ class SportsMan(Base):
     updated_at: Mapped[str] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     sport_profile = relationship("SportProfile", foreign_keys=[sport_profile_id])
-    
     subscription = relationship("Subscription", foreign_keys=[subscription_id])
+    injuries: Mapped[List["SportManInjury"]] = relationship(back_populates="sportsman")
 
     def __str__(self):
-        return self.name
-    
+        return self.user_id
+
 
 class Subscription(Base):
     __tablename__ = "subscription"
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)    
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
     description: Mapped[str] = mapped_column(String(200))
     type: Mapped[str] = mapped_column(String(20))
     created_at: Mapped[str] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[str] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     def __str__(self):
-        return self.name
-    
+        return self.description
+
+
 class SportProfile(Base):
     __tablename__ = "sport_profile"
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
-    ftp: Mapped[str] = mapped_column(String(5))    
+    ftp: Mapped[str] = mapped_column(String(5))
     vo2_max: Mapped[str] = mapped_column(String(5))
     training_time: Mapped[float] = mapped_column(Float)
     created_at: Mapped[str] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[str] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-
     def __str__(self):
-        return self.name
-   
+        return self.id
 
-    
+
 class SportManInjury(Base):
     __tablename__ = "sportman_injury"
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)        
-    id_sporman: Mapped[int] = mapped_column(Integer)    
-    id_injury: Mapped[int] = mapped_column(Integer)   
-    created_at: Mapped[str] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[str] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-        
-    def __str__(self):
-        return self.name
-    
-class Injuries(Base):
-    __tablename__ = "injuries"
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)       
-    name: Mapped[str] = mapped_column(String(200))    
-    description: Mapped[str] = mapped_column(String(200))   
-    severity: Mapped[int] = mapped_column(Integer)  
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    id_sporman: Mapped[int] = mapped_column(ForeignKey("sportsman.id"), index=True, nullable=True)
+    id_injury: Mapped[int] = mapped_column(ForeignKey("injuries.id"), index=True, nullable=True)
     created_at: Mapped[str] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[str] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    
+    sportsman: Mapped["SportsMan"] = relationship(back_populates="injuries")
+    injury: Mapped["Injuries"] = relationship()
+
     def __str__(self):
-        return self.name    
+        return self.id
+
+
+class Injuries(Base):
+    __tablename__ = "injuries"
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    name: Mapped[str] = mapped_column(String(200))
+    description: Mapped[str] = mapped_column(String(200))
+    severity: Mapped[int] = mapped_column(Integer)
+    created_at: Mapped[str] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[str] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __str__(self):
+        return self.name

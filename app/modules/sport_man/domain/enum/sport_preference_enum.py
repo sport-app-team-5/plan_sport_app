@@ -1,17 +1,19 @@
 from enum import Enum
 
+
 class SportPreference(Enum):
-    ATHLETICS= "ATHLETICS"
-    CYCLING = "CYCLING"
+    ATHLETICS = "Atletismo"
+    CYCLING = "Ciclismo"
+
+
 class SporExperience(Enum):
-    SI="SI"
-    NO="NO"
-    
+    SI = "Si"
+    NO = "No"
+
+
 class SportDedication(Enum):
-   ONETHREEHOURS = "1_3_HOURS"
-   THREEFIVEHOURS = "3_5_HOURS"
-   FIVESEVENHOURS= "5_7_HOURS"
-   SEVENEIGHTHOURS= "7_8_HOURS"
-   MOREEIGHTHOURS= "MORE_8_HOURS"
-    
-   
+    ONETHREEHOURS = "1 a 3 horas"
+    THREEFIVEHOURS = "3 a 5 horas"
+    FIVESEVENHOURS = "5 a 7 horas"
+    SEVENEIGHTHOURS = "7 a 8 horas"
+    MOREEIGHTHOURS = "Mas de 8 horas"

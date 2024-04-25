@@ -1,6 +1,7 @@
 from typing import List
 from sqlalchemy.orm import Session
-from app.modules.sport_man.aplication.dto import InjuryRequestDTO,SportsManRequestDTO, SportsManResponseDTO, SportManRequestProfileSportDTO
+from app.modules.sport_man.aplication.dto import InjuryRequestDTO, SportsManRequestDTO, SportsManResponseDTO, \
+    SportManRequestProfileSportDTO, SportManResponseProfileDTO
 from app.modules.sport_man.domain.repository import UserRepository
 from app.modules.sport_man.infrastructure.factories import RepositoryFactory
 
@@ -21,16 +22,21 @@ class SportsManService:
         repository = self._repository_factory.create_object(UserRepository)
         return repository.create(sportsman_data, db)
 
-    def update_sportsmen(self, sportsman_id: int, sportsman_data: SportsManRequestDTO, db: Session) -> SportsManResponseDTO:
+    def update_sportsmen(self, sportsman_id: int, sportsman_data: SportsManRequestDTO,
+                         db: Session) -> SportsManResponseDTO:
         repository = self._repository_factory.create_object(UserRepository)
         return repository.update(sportsman_id, sportsman_data, db)
-    
-    def update_sportman_profile_information(self,  user_id: int,  sportsman_data: SportManRequestProfileSportDTO, db:Session):
-        repository = self._repository_factory.create_object(UserRepository)      
-        for  injury in sportsman_data.injuries:
-                repository.create_injury(injury, user_id, db)
-        return repository.update_sport_profile(user_id, sportsman_data, db)
-    
 
-    
- 
+    def update_sportsman_profile_information(self, user_id: int, sportsman_data: SportManRequestProfileSportDTO,
+                                             db: Session):
+        repository = self._repository_factory.create_object(UserRepository)
+        for injury in sportsman_data.injuries:
+            repository.create_injury(injury, user_id, db)
+        return repository.update_sport_profile(user_id, sportsman_data, db)
+
+    def get_sportsman_profile(self, user_id: int, db: Session) -> SportManResponseProfileDTO:
+        sports_man_service = SportsManService()
+        sport_man = sports_man_service.get_sportsmen_by_id(user_id, db)
+        sport_man_id = sport_man.id
+        repository = self._repository_factory.create_object(UserRepository)
+        return repository.get_sports_profile(sport_man_id, db)
