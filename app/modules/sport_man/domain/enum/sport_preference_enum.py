@@ -2,8 +2,8 @@ from enum import Enum
 
 
 class SportPreference(Enum):
-    ATHLETICS = "Atletismo"
     CYCLING = "Ciclismo"
+    ATHLETICS = "Atletismo"
 
 
 class SporExperience(Enum):
