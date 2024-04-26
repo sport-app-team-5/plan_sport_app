@@ -164,5 +164,5 @@ def update_sportman_profile_information(client, headers, sportsman_id, sportsman
 
 
 def get_sportsman_profile(client, headers) -> Response:
-    result = client.get(f"/api/v1/auth/sports_men/profile/sport", headers=headers)
+    result = client.get("/api/v1/auth/sports_men/profile/sport", headers=headers)
     return result
