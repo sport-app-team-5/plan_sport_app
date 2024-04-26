@@ -138,4 +138,5 @@ class SportManResponseProfileDTO(BaseModel):
     injuries: list
     exercise_experience: str
     time_dedication_sport: str
+    risk: str
     

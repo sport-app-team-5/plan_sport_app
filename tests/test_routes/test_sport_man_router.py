@@ -26,7 +26,7 @@ def injuries_seeders(db) -> None:
 @pytest.fixture
 def profile_seeders(db) -> None:
     db.add(SportsMan(user_id=1, sport_preference='Atletismo', exercise_experience='Si',
-                     time_dedication_sport='1 a 3 horas'))
+                     time_dedication_sport='1 a 3 horas',risk='Riesgo Bajo'))
     db.add(Injuries(name="Lesion de pie", description="Lesion de pie", severity=1))
     db.add(Injuries(name="Lesion de muñeca", description="Lesion de muñeca", severity=2))
     db.commit()
