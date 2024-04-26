@@ -44,6 +44,7 @@ sportsman_data = {
     "body_mass_index": 23.15
 }
 sportsman_data_profile_information = {
+    "birth_year": 1994,
     "height": 10,
     "weight": 10,
     "id": 1,
@@ -51,7 +52,8 @@ sportsman_data_profile_information = {
         1,
         2
     ],
-    "sport_preference": "CYCLING"
+    "sport_preference": "Atletismo",
+    "exercise_experience":"Si",
 }
 
 
