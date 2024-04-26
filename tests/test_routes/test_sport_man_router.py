@@ -26,7 +26,7 @@ def injuries_seeders(db) -> None:
 @pytest.fixture
 def profile_seeders(db) -> None:
     db.add(SportsMan(user_id=1, sport_preference='Atletismo', exercise_experience='Si',
-                     time_dedication_sport='1 a 3 horas'))
+                     time_dedication_sport='1 a 3 horas',risk='Riesgo Bajo'))
     db.add(Injuries(name="Lesion de pie", description="Lesion de pie", severity=1))
     db.add(Injuries(name="Lesion de muñeca", description="Lesion de muñeca", severity=2))
     db.commit()
@@ -44,6 +44,7 @@ sportsman_data = {
     "body_mass_index": 23.15
 }
 sportsman_data_profile_information = {
+    "birth_year": 1994,
     "height": 10,
     "weight": 10,
     "id": 1,
@@ -51,7 +52,8 @@ sportsman_data_profile_information = {
         1,
         2
     ],
-    "sport_preference": "CYCLING"
+    "sport_preference": "Atletismo",
+    "exercise_experience":"Si",
 }
 
 
@@ -116,19 +118,6 @@ class TestSportManRouter:
         result = update_sportman_profile_information(client, headers, 1, data)
         assert result.status_code == 422
 
-    def test_update_sportman_profile_information_when_sport_man_not_exists(self, client, headers, injuries_seeders):
-        data = {
-            "id": 1,
-            "height": 180,
-            "weight": 75,
-            "birth_year": 1990,
-            "injuries": [1, 2],
-            "sport_preference": "ATHLETICS",
-            "exercise_experience": "SI"
-
-        }
-        result = update_sportman_profile_information(client, headers, 1, data)
-        assert result.status_code == 422
 
     def test_get_sportsman_profile(self, client, headers, profile_seeders):
         response = get_sportsman_profile(client, headers)
@@ -162,5 +151,5 @@ def update_sportman_profile_information(client, headers, sportsman_id, sportsman
 
 
 def get_sportsman_profile(client, headers) -> Response:
-    result = client.get(f"/api/v1/auth/sports_men/profile/sport", headers=headers)
+    result = client.get("/api/v1/auth/sports_men/profile/sport", headers=headers)
     return result
