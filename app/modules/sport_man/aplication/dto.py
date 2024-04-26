@@ -4,7 +4,7 @@ from typing import List
 from app.modules.sport_man.domain.enum.food_preference_enum import FoodPreference
 from app.modules.sport_man.domain.enum.subscription_type_enum import SubscriptionType
 from app.modules.sport_man.domain.enum.trining_goal_enum import TrainingGoal
-from app.modules.sport_man.domain.enum.sport_preference_enum import SportPreference, SporExperience,SportDedication
+from app.modules.sport_man.domain.enum.sport_preference_enum import SportPreference, SporExperience,SportDedication,SportManRisk
 
 
 class SportsManRequestDTO(BaseModel):

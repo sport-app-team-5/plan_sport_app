@@ -17,6 +17,8 @@ class SportsMan(Base):
     height: Mapped[int] = mapped_column(Integer, nullable=True)
     weight: Mapped[int] = mapped_column(Integer, nullable=True)
     training_goal: Mapped[str] = mapped_column(String(20), nullable=True)
+    
+    risk: Mapped[str] = mapped_column(String(200), nullable=True)
  
     
     body_mass_index: Mapped[float] =  mapped_column(Float, nullable=True)

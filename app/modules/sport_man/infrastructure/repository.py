@@ -8,9 +8,8 @@ from app.modules.sport_man.domain.entities import SportsMan, Injuries, SportManI
 from app.modules.sport_man.domain.enum.food_preference_enum import FoodPreference
 from app.modules.sport_man.domain.enum.trining_goal_enum import TrainingGoal
 from app.modules.sport_man.domain.repository import UserRepository
-from app.modules.sport_man.domain.enum.sport_preference_enum import SportPreference, SporExperience, SportDedication
-
-
+from app.modules.sport_man.domain.enum.sport_preference_enum import SportPreference, SporExperience, SportDedication, SportManRisk
+from datetime import datetime
 class UserRepositoryPostgres(UserRepository):
 
     @staticmethod
@@ -44,7 +43,7 @@ class UserRepositoryPostgres(UserRepository):
             sport_men.birth_year = entity.birth_year
             sport_men.height = altura
             sport_men.weight = entity.weight
-            sport_men.exercise_experience = entity.exercise_experience
+            sport_men.exercise_experience = entity.exercise_experience            
 
             if isinstance(entity.sport_preference, SportPreference):
                 sport_men.sport_preference = entity.sport_preference.value
@@ -54,16 +53,35 @@ class UserRepositoryPostgres(UserRepository):
 
             if isinstance(entity.exercise_experience, SporExperience):
                 sport_men.exercise_experience = entity.exercise_experience.value
-
-            sport_men.body_mass_index = (entity.height) / (altura ** 2)
+            mass_index_value = round((entity.weight) / ((altura/100) ** 2), 1)
+            sport_men.body_mass_index = mass_index_value
+            sport_men.risk = self.calculateRisk(entity.birth_year, mass_index_value)
             db.add(sport_men)
             db.commit()
-            return sport_men
-
+            return sport_men   
         except SQLAlchemyError as e:
             db.rollback()
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
-
+        
+    
+    def calculateRisk(self, birth_year: int, body_mass_index: float) ->  SportManRisk:
+        risk = SportManRisk.WITOOUTRISK.value
+        current_year = datetime.now().year
+        age = current_year - birth_year
+        if (age > 70 and body_mass_index < 16.5) or (age > 70 and body_mass_index > 30):
+            risk = SportManRisk.HIGHRISK.value
+            
+        elif (55 < age <= 70 and 16.5 <= body_mass_index <= 18.5 ) or (55 < age <= 70 and 25 <= body_mass_index <= 30 ):
+            risk = SportManRisk.MEDIUMRISK.value
+        
+        elif age <= 55 and 18.5 < body_mass_index < 25:
+            risk = SportManRisk.WITOOUTRISK.value
+            
+        elif age < 55 and (body_mass_index < 18.5 or body_mass_index > 25):
+            risk = SportManRisk.LOWRISK.value
+            
+        return risk
+            
     def create_injury(self, id_injury: int, sportman_id: int, db: Session) -> InjuryResponseDTO:
         try:
             injury = SportManInjury()

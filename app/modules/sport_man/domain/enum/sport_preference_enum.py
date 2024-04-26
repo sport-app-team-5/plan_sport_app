@@ -17,3 +17,11 @@ class SportDedication(Enum):
     FIVESEVENHOURS = "5 a 7 horas"
     SEVENEIGHTHOURS = "7 a 8 horas"
     MOREEIGHTHOURS = "Mas de 8 horas"
+    
+class SportManRisk(Enum):
+    HIGHRISK = "Riesgo alto"
+    MEDIUMRISK = "Riesgo Medio"
+    LOWRISK = "Riesgo Bajo"
+    WITOOUTRISK = "Sin Riesgo"
+ 
+
