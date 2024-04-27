@@ -35,11 +35,8 @@ class SportsManService:
         return repository.update_sport_profile(user_id, sportsman_data, db)
 
     def get_sportsman_profile(self, user_id: int, db: Session) -> SportManResponseProfileDTO:
-        sports_man_service = SportsManService()
-        sport_man = sports_man_service.get_sportsmen_by_id(user_id, db)
-        sport_man_id = sport_man.id
         repository = self._repository_factory.create_object(UserRepository)
-        return repository.get_sports_profile(sport_man_id, db)
+        return repository.get_sports_profile(user_id, db)
     
     def update_suscription_id(self, user_id: int, suscription_type:str, db: Session):  
         sports_man_service = SportsManService()
