@@ -419,7 +419,7 @@ pyrightconfig.json
 !.vscode/launch.json
 !.vscode/extensions.json
 !.vscode/*.code-snippets
-!.vscode/launch.json
+.vscode/launch.json
 
 
 # Local History for Visual Studio Code
