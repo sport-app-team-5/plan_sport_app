@@ -99,6 +99,8 @@ class SportManRequestProfileSportDTO(BaseModel):
             "sport_preference": "ATHLETICS"
         }
     })
+    
+    
 
 
 class SportManResponseProfileSportDTO(BaseModel):

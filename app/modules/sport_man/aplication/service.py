@@ -1,6 +1,6 @@
 from typing import List
 from sqlalchemy.orm import Session
-from app.modules.sport_man.aplication.dto import InjuryRequestDTO, SportsManRequestDTO, SportsManResponseDTO, \
+from app.modules.sport_man.aplication.dto import  SportsManRequestDTO, SportsManResponseDTO, \
     SportManRequestProfileSportDTO, SportManResponseProfileDTO
 from app.modules.sport_man.domain.repository import UserRepository
 from app.modules.sport_man.infrastructure.factories import RepositoryFactory
@@ -40,3 +40,9 @@ class SportsManService:
         sport_man_id = sport_man.id
         repository = self._repository_factory.create_object(UserRepository)
         return repository.get_sports_profile(sport_man_id, db)
+    
+    def update_suscription_id(self, user_id: int, suscription_type:str, db: Session):  
+        sports_man_service = SportsManService()
+        sport_man = sports_man_service.get_sportsmen_by_id(user_id, db)      
+        repository = self._repository_factory.create_object(UserRepository)
+        return repository.update_suscription_id(sport_man.id, suscription_type, db)

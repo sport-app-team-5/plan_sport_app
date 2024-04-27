@@ -51,3 +51,12 @@ def update_sportsman_profile_information(user_id: int, sportsman_profile_informa
 def get_sportsman_profile_information(user_id: int = Depends(get_current_user_id), db: Session = Depends(get_db)):
     service = SportsManService()
     return service.get_sportsman_profile(user_id, db)
+
+@sport_men_router.put("/profile/set_suscription/{suscription_type}",
+                      dependencies=[
+                          Security(authorized, scopes=[PermissionEnum.UPDATE_SPORT_MAN_PROFILE_INFORMATION.code])])
+def update_sportsman_profile_information(user_id: int = Depends(get_current_user_id), suscription_type: str = None,
+                                         db: Session = Depends(get_db)):
+    service = SportsManService()
+    return service.update_suscription_id(user_id, suscription_type, db)
+
