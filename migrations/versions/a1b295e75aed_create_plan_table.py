@@ -28,9 +28,12 @@ def upgrade() -> None:
 
     op.create_table(
         'training_plan',
-        sa.Column('id', sa.Integer, primary_key=True, index=True),
-        sa.Column('name', sa.String(50), nullable=False),
-        sa.Column('description', sa.String(50), nullable=False),
+        sa.Column('id', sa.Integer(), primary_key=True, index=True),
+        sa.Column('name', sa.String(200)),
+        sa.Column('description', sa.String(200)),
+        sa.Column('duration', sa.Integer()),
+        sa.Column('sport', sa.Integer()),
+        sa.Column('intensity', sa.String(20)),
         sa.Column('created_at', sa.DateTime(), nullable=False),
         sa.Column('updated_at', sa.DateTime(), nullable=False)
     )
