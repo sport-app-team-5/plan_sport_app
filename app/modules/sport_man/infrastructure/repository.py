@@ -143,9 +143,11 @@ class UserRepositoryPostgres(UserRepository):
             db.rollback()
             raise HTTPException(status_code=status.HTTP_502_INTERNAL_SERVER_ERROR, detail=str(e))
 
-    def get_sports_profile(self, user_id: int, db: Session) -> SportManResponseProfileDTO:
+    def get_sports_profile(self, sport_man_id: int, db: Session) -> SportManResponseProfileDTO:
         try:
-            sports_men = db.query(SportsMan).filter(SportsMan.user_id == user_id).first()
+            sports_men = db.query(SportsMan).filter(SportsMan.id == sport_man_id).one_or_none()
+            if not sports_men:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Sport men not found")
             injuries = []
             for injury in sports_men.injuries:
                 injuries.append(injury.injury.name)
