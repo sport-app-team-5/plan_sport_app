@@ -4,7 +4,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from app.modules.sport_man.aplication.dto import SportsManResponseDTO, SportManResponseProfileSportDTO, \
     InjuryResponseDTO, SportManResponseProfileDTO
-from app.modules.sport_man.domain.entities import SportsMan, Injuries, SportManInjury
+from app.modules.sport_man.domain.entities import SportsMan, Injuries, SportManInjury,Subscription
 from app.modules.sport_man.domain.enum.food_preference_enum import FoodPreference
 from app.modules.sport_man.domain.enum.trining_goal_enum import TrainingGoal
 from app.modules.sport_man.domain.repository import UserRepository
@@ -55,7 +55,7 @@ class UserRepositoryPostgres(UserRepository):
                 sport_men.exercise_experience = entity.exercise_experience.value
             mass_index_value = round((entity.weight) / ((altura/100) ** 2), 1)
             sport_men.body_mass_index = mass_index_value
-            sport_men.risk = self.calculateRisk(entity.birth_year, mass_index_value)
+            sport_men.risk = self.calculateRisk(entity.birth_year, mass_index_value)  
             db.add(sport_men)
             db.commit()
             return sport_men   
@@ -69,16 +69,13 @@ class UserRepositoryPostgres(UserRepository):
         current_year = datetime.now().year
         age = current_year - birth_year
         if (age > 70 and body_mass_index < 16.5) or (age > 70 and body_mass_index > 30):
-            risk = SportManRisk.HIGHRISK.value
+            risk = SportManRisk.HIGHRISK.value        
             
         elif (55 < age <= 70 and 16.5 <= body_mass_index <= 18.5 ) or (55 < age <= 70 and 25 <= body_mass_index <= 30 ):
-            risk = SportManRisk.MEDIUMRISK.value
+            risk = SportManRisk.MEDIUMRISK.value          
         
         elif age <= 55 and 18.5 < body_mass_index < 25:
-            risk = SportManRisk.WITOOUTRISK.value
-            
-        elif age < 55 and (body_mass_index < 18.5 or body_mass_index > 25):
-            risk = SportManRisk.LOWRISK.value
+            risk = SportManRisk.WITOOUTRISK.value         
             
         return risk
             
@@ -157,5 +154,16 @@ class UserRepositoryPostgres(UserRepository):
                                               exercise_experience=sports_men.exercise_experience,
                                               time_dedication_sport=sports_men.time_dedication_sport,
                                               risk=sports_men.risk)
+        except SQLAlchemyError as e:
+            raise HTTPException(status_code=502, detail=str(e))
+        
+    def update_suscription_id(self, user_id: int, suscription_type:str, db: Session):
+        try:
+            sport_man = db.query(SportsMan).filter(SportsMan.user_id == user_id).first()
+            subscription = db.query(Subscription).filter(Subscription.type == suscription_type).first()
+            sport_man.subscription_id = subscription.id
+            db.add(sport_man)
+            db.commit()
+            return sport_man
         except SQLAlchemyError as e:
             raise HTTPException(status_code=502, detail=str(e))
