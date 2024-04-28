@@ -1,9 +1,7 @@
-from typing import Optional
 from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime
-from sqlalchemy import Column, Float, ForeignKey, Integer, Sequence, String, DateTime, Boolean, column, func
+from sqlalchemy import Column, Float, ForeignKey, Integer, String, DateTime
 from app.config.db import Base
-from app.modules.sport_man.domain.entities import SportsMan
 
 
 class SportsSession(Base):
@@ -36,18 +34,6 @@ class Indicators(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String(50), nullable=False)
-    created_at: Mapped[str] = mapped_column(DateTime, default=datetime.utcnow)
-    updated_at: Mapped[str] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    def __str__(self):
-        return self.name
-
-
-class TrainingPlan(Base):
-    __tablename__ = 'training_plan'
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    name: Mapped[str] = mapped_column(String(50), nullable=False)
-    description: Mapped[str] = mapped_column(String(50), nullable=False)
     created_at: Mapped[str] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[str] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     def __str__(self):

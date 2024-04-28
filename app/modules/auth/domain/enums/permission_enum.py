@@ -32,6 +32,9 @@ class PermissionEnum(str, Enum):
     READ_ALLERGY_SPORTMAN = ("Read allergy for sportman", "read", "RAS")
     MANAGE_ALLERGY = ("Manage allergies", "manage", "MAAL")
     
+    #Acciones y permisos para modificar el perfil del deportista 
+    UPDATE_SPORT_MAN_PROFILE_INFORMATION = ("Create sport man profile information", "update", "USP")
+    
     def __new__(cls, value, action, code):
         obj = str.__new__(cls)
         obj._value_ = value
