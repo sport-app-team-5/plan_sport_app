@@ -148,6 +148,9 @@ class UserRepositoryPostgres(UserRepository):
     def get_sports_profile(self, user_id: int, db: Session) -> SportManResponseProfileDTO:
         try:
             sports_men = db.query(SportsMan).filter(SportsMan.user_id == user_id).first()
+            if sports_men.risk == None:
+                raise HTTPException(status_code=status.HTTP_206_PARTIAL_CONTENT, detail="Sport man not have risk")
+                
             injuries = []
             for injury in sports_men.injuries:
                 injuries.append(injury.injury.name)
