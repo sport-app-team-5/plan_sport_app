@@ -124,7 +124,6 @@ class UserRepositoryPostgres(UserRepository):
             sportsman = db.query(SportsMan).filter(SportsMan.id == entity_id).first()
 
             if sportsman:
-                sportsman.user_id = entity.user_id
                 sportsman.sport_profile_id = entity.sport_profile_id
                 sportsman.subscription_id = entity.subscription_id
                 if isinstance(entity.food_preference, FoodPreference):
