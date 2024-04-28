@@ -1,8 +1,7 @@
 from fastapi import Response
 import pytest
 from app.modules.allergy.domain.entities import Allergy
-from app.modules.sport_man.domain.entities import SportsMan
-
+from app.modules.sport_man.domain.entities import SportsMan, Injuries, SportManInjury, Subscription
 
 @pytest.fixture
 def sport_man_seeders(db) -> None:
@@ -17,6 +16,30 @@ def allergy_seeders(db) -> None:
     db.commit()
 
 
+@pytest.fixture
+def injuries_seeders(db) -> None:
+    db.add(Injuries(name="Lesion de pie", description="Lesion de pie", severity=1))
+    db.add(Injuries(name="Lesion de muñeca", description="Lesion de muñeca", severity=2))
+    db.commit()
+
+@pytest.fixture
+def profile_seeders(db) -> None:
+    db.add(SportsMan(user_id=1, sport_preference='Atletismo', exercise_experience='Si',
+                     time_dedication_sport='1 a 3 horas',risk='Riesgo Bajo'))
+    db.add(Injuries(name="Lesion de pie", description="Lesion de pie", severity=1))
+    db.add(Injuries(name="Lesion de muñeca", description="Lesion de muñeca", severity=2))
+    db.commit()
+    db.add(SportManInjury(id_sporman=1, id_injury=1))
+    db.commit()
+    
+@pytest.fixture
+def suscriptions_seeders(db) -> None:
+    db.add(Subscription(type="Basic", description="Plan básico de entrenamiento"))
+    db.add(Subscription(type="Intermediate", description="Plan intermedio de entrenamiento"))
+    db.add(Subscription(type="Premiun", description="Plan avanzado de entrenamiento"))
+    db.commit()    
+
+
 sportsman_data = {
     "user_id": 1,
     "birth_year": 1990,
@@ -25,6 +48,18 @@ sportsman_data = {
     "height": 180,
     "weight": 75,
     "body_mass_index": 23.15
+}
+sportsman_data_profile_information = {
+    "birth_year": 1994,
+    "height": 10,
+    "weight": 10,
+    "id": 1,
+    "injuries": [
+        1,
+        2
+    ],
+    "sport_preference": "Atletismo",
+    "exercise_experience":"Si",
 }
 
 
@@ -60,6 +95,44 @@ class TestSportManRouter:
         response = client.put("/api/v1/auth/sport_men/99999", json=sportsman_data)
         assert response.status_code == 404
 
+    def test_update_sportman_profile_information(self, client, headers, injuries_seeders, sport_man_seeders):
+        data = {
+            "id": 1,
+            "height": 180,
+            "weight": 75,
+            "birth_year": 1990,
+            "injuries": [1, 2],
+            "sport_preference": "Atletismo",
+            "exercise_experience": "Si",
+            "time_dedication_sport": "1 a 3 horas"
+        }
+        result = update_sportman_profile_information(client, headers, 1, data)
+        assert result.status_code == 200
+
+    def test_update_sportman_profile_information_when_missing_attributes(self, client, headers, injuries_seeders,
+                                                                         sport_man_seeders):
+        data = {
+            "id": 1,
+            "height": 180,
+            "weight": 75,
+            "birth_year": 1990,
+            "injuries": [1, 2],
+            "sport_preference": "ATHLETICS",
+            "exercise_experience": "SI"
+
+        }
+        result = update_sportman_profile_information(client, headers, 1, data)
+        assert result.status_code == 422
+        
+    def test_update_sportman_suscription_id(self, client, headers, suscriptions_seeders , profile_seeders):
+
+        result = update_sportman_susciption_id(client, headers, "Basic")
+        assert result.status_code == 200
+
+    def test_get_sportsman_profile(self, client, headers, profile_seeders):
+        response = get_sportsman_profile(client, headers)
+        assert response.status_code == 200
+
 
 def create_sportsman(client, headers, sportsman_data) -> Response:
     result = client.post("/api/v1/sports_men", headers=headers, json=sportsman_data)
@@ -78,4 +151,19 @@ def get_sportsman_by_user_id(client, user_id, headers) -> Response:
 
 def update_sportsman(client, headers, sportsman_id, sportsman_data) -> Response:
     result = client.put(f"/api/v1/auth/sports_men/{sportsman_id}", headers=headers, json=sportsman_data)
+    return result
+
+
+def update_sportman_profile_information(client, headers, sportsman_id, sportsman_data_profile_information) -> Response:
+    result = client.put(f"/api/v1/auth/sports_men/profile/sport/{sportsman_id}", headers=headers,
+                        json=sportsman_data_profile_information)
+    return result
+
+
+def get_sportsman_profile(client, headers) -> Response:
+    result = client.get("/api/v1/auth/sports_men/profile/sport", headers=headers)
+    return result
+
+def update_sportman_susciption_id(client,headers, suscription_type) -> Response:
+    result = client.put(f"/api/v1/auth/sports_men/profile/set_suscription/{suscription_type}", headers=headers)
     return result
