@@ -16,6 +16,10 @@ class AllergiesService:
         repository = self._repository_factory.create_object(AllergyRepository)
         return repository.get_all(db)
     
+    def get_allergy_by_id(self, allergy_id: int, db: Session) -> AllergyDTO:
+        repository = self._repository_factory.create_object(AllergyRepository)
+        return repository.get_by_id(allergy_id, db)
+    
 class AllergiesSportsMenService:
     def __init__(self):
         self._repository_factory = RepositoryFactory()
@@ -60,10 +64,23 @@ class NutritionalInformationService:
     def get_nutritional_information(self, user_id: int, db: Session) -> NutritionalInformationResponseDTO:
         allergies_sport_men_service = AllergiesSportsMenService()
         sports_man_service = SportsManService()
+        allergies_service = AllergiesService()
+
         sport_man = sports_man_service.get_sportsmen_by_id(user_id, db)
         sport_man_id = sport_man.id
 
-        allergies = allergies_sport_men_service.get_allergies_by_sport_man_id(sport_man_id, db)    
+        allergies_sportman = allergies_sport_men_service.get_allergies_by_sport_man_id(sport_man_id, db)    
+
+        allergies = []
+        
+        for allergy in allergies_sportman:
+            allergy_desc = AllergyDescDTO()
+            allergy_db = allergies_service.get_allergy_by_id(allergy.allergy_id, db)
+            allergy_desc.id = allergy_db.id
+            allergy_desc.name = allergy_db.name
+            allergy_desc.description = allergy_db.description
+            allergies.append(allergy_desc)
+
 
         nutritional_information = NutritionalInformationResponseDTO()
         nutritional_information.sportsman_id = sport_man_id
