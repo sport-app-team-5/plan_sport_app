@@ -24,23 +24,23 @@ def get_training(db: Session = Depends(get_db)):
     return service.get_training(db)
 
 
-@training_router.get("/{id}", response_model=TrainingDTO,
+@training_router.get("/{training_id}", response_model=TrainingDTO,
                      dependencies=[Security(authorized, scopes=[PermissionEnum.MANAGE_SESSION.code])])
-def get_training_by_id(id: int, db: Session = Depends(get_db)):
+def get_training_by_id(training_id: int, db: Session = Depends(get_db)):
     service = TrainingService()
-    training = service.get_training_by_id(id, db)
+    training = service.get_training_by_id(training_id, db)
     return training
 
 
-@training_router.put("/{id}", response_model=TrainingDTO, status_code=status.HTTP_201_CREATED,
+@training_router.put("/{training_id}", response_model=TrainingDTO, status_code=status.HTTP_201_CREATED,
                      dependencies=[Security(authorized, scopes=[PermissionEnum.MANAGE_SESSION.code])])
-def update_training(id: int, training_data: TrainingUpdateDTO, db: Session = Depends(get_db)):
+def update_training(training_id: int, training_data: TrainingUpdateDTO, db: Session = Depends(get_db)):
     service = TrainingService()
-    return service.update_training(id, training_data, db)
+    return service.update_training(training_id, training_data, db)
 
 
 @training_router.post("", response_model=TrainingDTO, status_code=status.HTTP_201_CREATED,
-                     dependencies=[Security(authorized, scopes=[PermissionEnum.MANAGE_SESSION.code])])
+                      dependencies=[Security(authorized, scopes=[PermissionEnum.MANAGE_SESSION.code])])
 def create_training(training_data: TrainingDTO, db: Session = Depends(get_db)):
     service = TrainingService()
     return service.create_training(training_data, db)
