@@ -2,7 +2,6 @@ from typing import List
 from fastapi import HTTPException, status
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
-
 from app.modules.sport_man.domain.enum.sport_preference_enum import SportPreference
 from app.modules.training.aplication.dto import TrainingDTO, TrainingUpdateDTO
 from app.modules.training.domain.entities import Training
@@ -87,6 +86,7 @@ class TrainingRepositoryPostgres(TrainingRepository):
                 raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='Training already exist')
             training.name = entity.name
             training.description = entity.description
+            training.sportsman_id = entity.sportsman_id
             if isinstance(entity.sport, SportPreference):
                 sport_index = list(SportPreference).index(entity.sport)
                 training.sport = sport_index + 1

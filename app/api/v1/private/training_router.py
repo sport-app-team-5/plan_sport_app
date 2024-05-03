@@ -6,7 +6,7 @@ from app.modules.auth.domain.enums.permission_enum import PermissionEnum
 from app.modules.auth.domain.service import AuthService
 from app.modules.training.aplication.dto import TrainingDTO, TrainingUpdateDTO
 from app.modules.training.aplication.service import TrainingService
-from app.seedwork.presentation.jwt import oauth2_scheme
+from app.seedwork.presentation.jwt import oauth2_scheme, get_current_user_id
 
 auth_service = AuthService()
 authorized = auth_service.authorized
@@ -41,6 +41,7 @@ def update_training(training_id: int, training_data: TrainingUpdateDTO, db: Sess
 
 @training_router.post("", response_model=TrainingDTO, status_code=status.HTTP_201_CREATED,
                       dependencies=[Security(authorized, scopes=[PermissionEnum.MANAGE_SESSION.code])])
-def create_training(training_data: TrainingDTO, db: Session = Depends(get_db)):
+def create_training(training_data: TrainingDTO, user_id: int = Depends(get_current_user_id),
+                    db: Session = Depends(get_db)):
     service = TrainingService()
-    return service.create_training(training_data, db)
+    return service.create_training(training_data, user_id, db)
