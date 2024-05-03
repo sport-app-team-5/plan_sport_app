@@ -42,3 +42,13 @@ class TrainingUpdateDTO(BaseModel):
             "duration": 60
         }
     })
+
+
+class TrainingResponseDTO(BaseModel):
+    id: int
+    sportsman_id: int
+    name: str
+    description: str
+    sport: SportPreference
+    intensity: Intensity
+    duration: int
