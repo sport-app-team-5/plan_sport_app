@@ -11,7 +11,7 @@ class Training(Base):
     name: Mapped[str] = mapped_column(String(200))
     description: Mapped[str] = mapped_column(String(200))
     duration: Mapped[int] = mapped_column(Integer)
-    sport: Mapped[int] = mapped_column(Integer)
+    sport: Mapped[str] = mapped_column(String(100))
     intensity: Mapped[str] = mapped_column(String(20))
     created_at: Mapped[str] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[str] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
