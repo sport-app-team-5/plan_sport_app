@@ -2,22 +2,20 @@ from typing import List
 from fastapi import HTTPException, status
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
-
 from app.modules.sport_man.domain.enum.sport_preference_enum import SportPreference
-from app.modules.training.aplication.dto import TrainingDTO, TrainingUpdateDTO
+from app.modules.training.aplication.dto import TrainingDTO, TrainingUpdateDTO, TrainingResponseDTO
 from app.modules.training.domain.entities import Training
 from app.modules.training.domain.enum.intensity_enum import Intensity
 from app.modules.training.domain.repository import TrainingRepository
 
 
 class TrainingRepositoryPostgres(TrainingRepository):
-
     @staticmethod
     def __validate_exist_training(id: int, db: Session) -> Training:
-        training  = db.query(Training).filter(Training.id == id).first()
+        training = db.query(Training).filter(Training.id == id).first()
         if not training:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Training not found')
-        
+
         return training
 
     def get_by_id(self, id: int, db: Session) -> TrainingDTO:
@@ -27,7 +25,7 @@ class TrainingRepositoryPostgres(TrainingRepository):
                 training.sport = SportPreference.CYCLING
             else:
                 training.sport = SportPreference.ATHLETICS
-            
+
             return training
         except SQLAlchemyError as e:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
@@ -37,7 +35,7 @@ class TrainingRepositoryPostgres(TrainingRepository):
             trainings = db.query(Training).all()
             training_dto = []
             for training in trainings:
-                sport_preference = SportPreference.CYCLING if training.sport == 1 else SportPreference.ATHLETICS 
+                sport_preference = SportPreference.CYCLING if training.sport == 1 else SportPreference.ATHLETICS
                 training_dto.append(
                     TrainingDTO(
                         id=training.id,
@@ -68,7 +66,7 @@ class TrainingRepositoryPostgres(TrainingRepository):
                 training.intensity = entity.intensity.value
             if entity.duration:
                 training.duration = entity.duration
-                       
+
             db.add(training)
             db.commit()
             if training.sport:
@@ -87,11 +85,9 @@ class TrainingRepositoryPostgres(TrainingRepository):
                 raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail='Training already exist')
             training.name = entity.name
             training.description = entity.description
-            if isinstance(entity.sport, SportPreference):
-                sport_index = list(SportPreference).index(entity.sport)
-                training.sport = sport_index + 1
-            if isinstance(entity.intensity, Intensity):
-                training.intensity = entity.intensity.value
+            training.sportsman_id = entity.sportsman_id
+            training.sport = entity.sport.value
+            training.intensity = entity.intensity.value
             training.duration = entity.duration
             db.add(training)
             db.commit()
@@ -106,3 +102,10 @@ class TrainingRepositoryPostgres(TrainingRepository):
             return SportPreference.CYCLING
         else:
             return SportPreference.ATHLETICS
+
+    def get_by_sportsman_id(self, sportsman_id: int, db: Session) -> List[TrainingResponseDTO]:
+        try:
+            trainings = db.query(Training).filter(Training.sportsman_id == sportsman_id).all()
+            return trainings
+        except SQLAlchemyError as e:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))

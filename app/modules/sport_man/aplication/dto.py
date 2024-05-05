@@ -136,6 +136,7 @@ class InjuryResponseDTO(BaseModel):
 
 
 class SportManResponseProfileDTO(BaseModel):
+    id: int
     sport_preference: str
     injuries: list
     exercise_experience: str
