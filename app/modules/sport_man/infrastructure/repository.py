@@ -154,7 +154,7 @@ class UserRepositoryPostgres(UserRepository):
             for injury in sports_men.injuries:
                 injuries.append(injury.injury.name)
 
-            return SportManResponseProfileDTO(sport_preference=sports_men.sport_preference, injuries=injuries,
+            return SportManResponseProfileDTO(id=sports_men.id, sport_preference=sports_men.sport_preference, injuries=injuries,
                                               exercise_experience=sports_men.exercise_experience,
                                               time_dedication_sport=sports_men.time_dedication_sport,
                                               risk=sports_men.risk)
