@@ -20,7 +20,8 @@ session_router = APIRouter(
 
 @session_router.post("/start", response_model=StartSportsSessionRequestModel,
                      dependencies=[Security(authorized, scopes=[PermissionEnum.MANAGE_SESSION.code])])
-async def start(model: StartSportsSessionRequestModel, db: Session = Depends(get_db), user_id: int = Depends(get_current_user_id)):
+async def start(model: StartSportsSessionRequestModel, db: Session = Depends(get_db),
+                user_id: int = Depends(get_current_user_id)):
     session = SessionService().start(model, db, user_id)
     return session
 
