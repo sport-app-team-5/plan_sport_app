@@ -44,7 +44,7 @@ def upgrade() -> None:
         sa.Column('time', sa.String(50), nullable=True),
         sa.Column('status', sa.String(20), nullable=False),
         sa.Column('sportsman_id', sa.Integer, sa.ForeignKey('sportsman.id'), nullable=False),
-        sa.Column('training_plan_id', sa.Integer, sa.ForeignKey('indicators.id'), nullable=False),
+        sa.Column('training_plan_id', sa.Integer, sa.ForeignKey('training_plan.id'), nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=False),
         sa.Column('updated_at', sa.DateTime(), nullable=False)
     )
