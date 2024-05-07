@@ -89,6 +89,7 @@ class TrainingRepositoryPostgres(TrainingRepository):
             training.sport = entity.sport.value
             training.intensity = entity.intensity.value
             training.duration = entity.duration
+            training.is_inside_house = entity.is_inside_house
             db.add(training)
             db.commit()
             training.sport = self.__convert_sport_preference(training)

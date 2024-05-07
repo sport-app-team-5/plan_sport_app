@@ -7,6 +7,7 @@ from app.modules.training.domain.enum.intensity_enum import Intensity
 class TrainingDTO(BaseModel):
     id: Optional[int] = None
     sportsman_id: Optional[int] = None
+    is_inside_house: bool
     name: str
     description: str
     sport: SportPreference
@@ -15,6 +16,7 @@ class TrainingDTO(BaseModel):
 
     model_config = ConfigDict(json_schema_extra={
         "example": {
+            "is_inside_house": True,
             "name": "Example Training",
             "description": "This is an example training",
             "sport": "Atletismo",
@@ -47,6 +49,7 @@ class TrainingUpdateDTO(BaseModel):
 class TrainingResponseDTO(BaseModel):
     id: int
     sportsman_id: int
+    is_inside_house: bool
     name: str
     description: str
     sport: SportPreference
