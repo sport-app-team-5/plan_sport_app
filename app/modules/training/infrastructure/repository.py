@@ -43,7 +43,8 @@ class TrainingRepositoryPostgres(TrainingRepository):
                         description=training.description,
                         sport=sport_preference,
                         intensity=Intensity(training.intensity),
-                        duration=training.duration
+                        duration=training.duration,
+                        is_inside_house=training.is_inside_house
                     )
                 )
             return training_dto
