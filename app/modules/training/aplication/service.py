@@ -10,9 +10,9 @@ class TrainingService:
     def __init__(self):
         self._repository_factory = RepositoryFactory()
 
-    def get_training(self, db: Session) -> List[TrainingDTO]:
+    def get_training(self, is_inside_house: bool, db: Session) -> List[TrainingDTO]:
         repository = self._repository_factory.create_object(TrainingRepository)
-        return repository.get_all(db)
+        return repository.get_all(is_inside_house, db)
 
     def get_training_by_id(self, user_id: int, db: Session) -> TrainingDTO:
         repository = self._repository_factory.create_object(TrainingRepository)

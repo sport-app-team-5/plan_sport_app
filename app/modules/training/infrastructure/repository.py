@@ -30,9 +30,13 @@ class TrainingRepositoryPostgres(TrainingRepository):
         except SQLAlchemyError as e:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
-    def get_all(self, db: Session) -> List[TrainingDTO]:
+    def get_all(self, is_inside_house: bool, db: Session) -> List[TrainingDTO]:
         try:
-            trainings = db.query(Training).all()
+            if is_inside_house is not None:
+                trainings = db.query(Training).filter(Training.is_inside_house == is_inside_house,
+                                                      Training.sportsman_id == None).all()
+            else:
+                trainings = db.query(Training).all()
             training_dto = []
             for training in trainings:
                 sport_preference = SportPreference.CYCLING if training.sport == 1 else SportPreference.ATHLETICS
@@ -43,7 +47,8 @@ class TrainingRepositoryPostgres(TrainingRepository):
                         description=training.description,
                         sport=sport_preference,
                         intensity=Intensity(training.intensity),
-                        duration=training.duration
+                        duration=training.duration,
+                        is_inside_house=training.is_inside_house
                     )
                 )
             return training_dto
@@ -89,6 +94,7 @@ class TrainingRepositoryPostgres(TrainingRepository):
             training.sport = entity.sport.value
             training.intensity = entity.intensity.value
             training.duration = entity.duration
+            training.is_inside_house = entity.is_inside_house
             db.add(training)
             db.commit()
             training.sport = self.__convert_sport_preference(training)
