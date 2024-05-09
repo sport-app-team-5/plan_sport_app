@@ -4,7 +4,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from app.modules.session.aplication.schemas import RegisterSportsSessionResponseModel, StartSportsSessionResponseModel, StopSportsSessionResponseModel
 from app.modules.session.domain.model import SportsSession, Monitoring
-from app.modules.session.domain.repository import RegisterSessionRepository, SessionResultsRepository, StartSessionRepository, StopSessionRepository
+from app.modules.session.domain.repository import RegisterSessionRepository, StartSessionRepository, StopSessionRepository
 
 
 class StartSessionRepositoryPostgres(StartSessionRepository):
