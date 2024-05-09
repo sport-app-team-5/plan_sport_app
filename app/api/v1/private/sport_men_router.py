@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, status, Security
 from sqlalchemy.orm import Session
 from app.config.db import get_db
 from app.modules.auth.domain.service import AuthService
-from app.modules.sport_man.aplication.dto import SportsManRequestDTO, SportsManResponseDTO, \
+from app.modules.sport_man.aplication.dto import SportResponseIndicatorsProfileDTO, SportsManRequestDTO, SportsManResponseDTO, \
     SportManRequestProfileSportDTO, SportManResponseProfileDTO
 from app.modules.sport_man.aplication.service import SportsManService
 from app.seedwork.presentation.jwt import oauth2_scheme, get_current_user_id
@@ -59,4 +59,10 @@ def update_sportsman_profile_information(user_id: int = Depends(get_current_user
                                          db: Session = Depends(get_db)):
     service = SportsManService()
     return service.update_suscription_id(user_id, suscription_type, db)
+
+@sport_men_router.get("/profile/sport/indicators", response_model=SportResponseIndicatorsProfileDTO,
+                      dependencies=[Security(authorized)])
+def get_indicators_profile_information(user_id: int = Depends(get_current_user_id), db: Session = Depends(get_db)):
+    service = SportsManService()
+    return service.get_indicator_profile_by_user_id(user_id, db)
 
