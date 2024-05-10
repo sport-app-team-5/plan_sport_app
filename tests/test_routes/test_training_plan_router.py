@@ -81,5 +81,5 @@ def update_training(client, headers, id, training_data) -> Response:
 
 
 def get_event_by_sportsman_id(client, headers) -> Response:
-    trainings = client.get(f"/api/v1/auth/trainings/sportsman", headers=headers)
+    trainings = client.get("/api/v1/auth/trainings/sportsman", headers=headers)
     return trainings
