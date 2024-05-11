@@ -3,6 +3,7 @@ from fastapi import HTTPException, status
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from app.modules.session.aplication.schemas import RegisterSportsSessionResponseModel, StartSportsSessionResponseModel, StopSportsSessionResponseModel
+from app.modules.session.aplication.schemas.session_schema import SportsSessionResponseModel
 from app.modules.session.domain.model import SportsSession, Monitoring
 from app.modules.session.domain.repository import RegisterSessionRepository, StartSessionRepository, StopSessionRepository
 
@@ -26,9 +27,9 @@ class StartSessionRepositoryPostgres(StartSessionRepository):
             print(str(e))
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
-    def get_by_id(self, entity_id: int, db: Session) -> StartSportsSessionResponseModel:
+    def get_by_id(self, session_id: str, db: Session) -> SportsSessionResponseModel:
         try:
-            session = db.query(SportsSession).filter(SportsSession.id == entity_id).first()
+            session = db.query(SportsSession).filter(SportsSession.id == session_id).first()
             if session:
                 return session
             else:
