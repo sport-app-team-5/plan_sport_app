@@ -34,14 +34,42 @@ session_stop_data = {
     "time": "00:20:50"
 }
 
+session_start_data = {
+    "id": "ABC",
+    "training_plan_id": "3"    
+}
+
+session_register_data = {
+    "session_id": "ABC", 
+    "indicators_id": "1", 
+    "value": "60.0"
+}
+
 
 class TestSesionRouter:
 
-    def test_stop_session(self, client, headers, sport_man_seeders, training_plan_seeders):
-        response = stop_session(client, headers, session_stop_data)
+    def test_start_session(self, client, headers, sport_man_seeders, training_plan_seeders):        
+        response = start_session(client, headers, session_start_data)
         assert response.status_code == 200
 
+    def test_register_session(self, client, headers, sport_man_seeders, training_plan_seeders):
+        response = register_session(client, headers, session_register_data)
+        assert response.status_code == 200
+
+
+    def test_stop_session(self, client, headers, sport_man_seeders, training_plan_seeders):
+        response = stop_session(client, headers, session_stop_data)
+        assert response.status_code == 200       
+
    
+def start_session(client, headers, session_data, ) -> Response:
+    result = client.post("/api/v1/auth/sessions/start", headers=headers, json=session_data)
+    return result
+
+def register_session(client, headers, session_data, ) -> Response:
+    result = client.post("/api/v1/auth/sessions/register", headers=headers, json=session_data)
+    return result
+
 def stop_session(client, headers, session_data, ) -> Response:
     result = client.post("/api/v1/auth/sessions/stop", headers=headers, json=session_data)
     return result
