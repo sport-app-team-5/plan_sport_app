@@ -102,7 +102,7 @@ class StopSessionRepositoryPostgres(StopSessionRepository):
         except SQLAlchemyError as e:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
         
-    def calculate_vo2_max(self, sportman_weight: float, session_duration: int, db: Session) -> float:
+    def calculate_vo2_max(self, sportman_weight: float, session_duration: int) -> float:
         try:
             oxigin_consumption = 3.5
 
