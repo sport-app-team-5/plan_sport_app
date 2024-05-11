@@ -80,7 +80,7 @@ class StopSessionRepositoryPostgres(StopSessionRepository):
     def create_sport_indicators(self, weight: int, entity: SportsSession, db: Session) -> StopSportsSessionResponseModel:
         try:
             average_ftp = self.calculate_average_ftp(entity.id, db)            
-            vo2_max = self.calculate_vo2_max(weight, entity.time, db)
+            vo2_max = self.calculate_vo2_max(weight, entity.time)
 
             entity.ftp = str(int(average_ftp))
             entity.vo2max = str(int(vo2_max))
