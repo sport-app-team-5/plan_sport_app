@@ -142,6 +142,9 @@ class SportManResponseProfileDTO(BaseModel):
     exercise_experience: str
     time_dedication_sport: str
     risk: str
+    birth_year: int
+    height: int
+    weight: int
 
 
 

@@ -3,12 +3,13 @@ import pytest
 from app.modules.allergy.domain.entities import Allergy
 from app.modules.sport_man.domain.entities import SportProfile, SportsMan, Injuries, SportManInjury, Subscription
 
+
 @pytest.fixture
 def sport_man_seeders(db) -> None:
-    db.add(SportProfile(id=1, ftp=1, vo2_max=1, training_time=1.0))    
+    db.add(SportProfile(id=1, ftp=1, vo2_max=1, training_time=1.0))
     db.commit()
 
-    db.add(SportsMan(user_id=1, sport_profile_id=1))    
+    db.add(SportsMan(user_id=1, sport_profile_id=1))
     db.commit()
 
 
@@ -25,22 +26,25 @@ def injuries_seeders(db) -> None:
     db.add(Injuries(name="Lesion de muñeca", description="Lesion de muñeca", severity=2))
     db.commit()
 
+
 @pytest.fixture
 def profile_seeders(db) -> None:
     db.add(SportsMan(user_id=1, sport_preference='Atletismo', exercise_experience='Si',
-                     time_dedication_sport='1 a 3 horas',risk='Riesgo Bajo'))
+                     time_dedication_sport='1 a 3 horas', risk='Riesgo Bajo', birth_year=2000,
+                     height=100, weight=100))
     db.add(Injuries(name="Lesion de pie", description="Lesion de pie", severity=1))
     db.add(Injuries(name="Lesion de muñeca", description="Lesion de muñeca", severity=2))
     db.commit()
     db.add(SportManInjury(id_sporman=1, id_injury=1))
     db.commit()
-    
+
+
 @pytest.fixture
 def suscriptions_seeders(db) -> None:
     db.add(Subscription(type="Basic", description="Plan básico de entrenamiento"))
     db.add(Subscription(type="Intermediate", description="Plan intermedio de entrenamiento"))
     db.add(Subscription(type="Premiun", description="Plan avanzado de entrenamiento"))
-    db.commit()    
+    db.commit()
 
 
 sportsman_data = {
@@ -62,7 +66,7 @@ sportsman_data_profile_information = {
         2
     ],
     "sport_preference": "Atletismo",
-    "exercise_experience":"Si",
+    "exercise_experience": "Si",
 }
 
 
@@ -126,9 +130,8 @@ class TestSportManRouter:
         }
         result = update_sportman_profile_information(client, headers, 1, data)
         assert result.status_code == 422
-        
-    def test_update_sportman_suscription_id(self, client, headers, suscriptions_seeders , profile_seeders):
 
+    def test_update_sportman_suscription_id(self, client, headers, suscriptions_seeders, profile_seeders):
         result = update_sportman_susciption_id(client, headers, "Basic")
         assert result.status_code == 200
 
@@ -171,9 +174,11 @@ def get_sportsman_profile(client, headers) -> Response:
     result = client.get("/api/v1/auth/sports_men/profile/sport", headers=headers)
     return result
 
-def update_sportman_susciption_id(client,headers, suscription_type) -> Response:
+
+def update_sportman_susciption_id(client, headers, suscription_type) -> Response:
     result = client.put(f"/api/v1/auth/sports_men/profile/set_suscription/{suscription_type}", headers=headers)
     return result
+
 
 def get_sportsman_profile_indicators(client, headers) -> Response:
     result = client.get("/api/v1/auth/sports_men/profile/sport/indicators", headers=headers)
