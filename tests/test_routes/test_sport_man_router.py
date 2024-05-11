@@ -1,11 +1,14 @@
 from fastapi import Response
 import pytest
 from app.modules.allergy.domain.entities import Allergy
-from app.modules.sport_man.domain.entities import SportsMan, Injuries, SportManInjury, Subscription
+from app.modules.sport_man.domain.entities import SportProfile, SportsMan, Injuries, SportManInjury, Subscription
 
 @pytest.fixture
 def sport_man_seeders(db) -> None:
-    db.add(SportsMan(user_id=1))
+    db.add(SportProfile(id=1, ftp=1, vo2_max=1, training_time=1.0))    
+    db.commit()
+
+    db.add(SportsMan(user_id=1, sport_profile_id=1))    
     db.commit()
 
 
@@ -133,6 +136,10 @@ class TestSportManRouter:
         response = get_sportsman_profile(client, headers)
         assert response.status_code == 200
 
+    def test_get_sportsman_profile_indicators(self, client, headers, sport_man_seeders, profile_seeders):
+        response = get_sportsman_profile_indicators(client, headers)
+        assert response.status_code == 200
+
 
 def create_sportsman(client, headers, sportsman_data) -> Response:
     result = client.post("/api/v1/sports_men", headers=headers, json=sportsman_data)
@@ -166,4 +173,8 @@ def get_sportsman_profile(client, headers) -> Response:
 
 def update_sportman_susciption_id(client,headers, suscription_type) -> Response:
     result = client.put(f"/api/v1/auth/sports_men/profile/set_suscription/{suscription_type}", headers=headers)
+    return result
+
+def get_sportsman_profile_indicators(client, headers) -> Response:
+    result = client.get("/api/v1/auth/sports_men/profile/sport/indicators", headers=headers)
     return result

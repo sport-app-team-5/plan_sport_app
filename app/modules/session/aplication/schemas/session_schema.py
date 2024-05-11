@@ -41,6 +41,9 @@ class RegisterSportsSessionResponseModel(BaseModel):
 class StopSportsSessionRequestModel(BaseModel):
     id: str
     time: str
+    weight: Optional[int] = None
+    ftp: Optional[str] = None
+    vo2max: Optional[str] = None
     model_config = ConfigDict(json_schema_extra={
         "example": {
             "id": "6ecd8c99-4036-403d-bf84-cf8400f67836",
@@ -50,4 +53,6 @@ class StopSportsSessionRequestModel(BaseModel):
 
 class StopSportsSessionResponseModel(BaseModel):
     id: str
+    ftp: str
+    vo2max: str
     model_config = ConfigDict(from_attributes=True)

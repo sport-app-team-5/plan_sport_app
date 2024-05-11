@@ -28,8 +28,8 @@ async def start(model: StartSportsSessionRequestModel, db: Session = Depends(get
 
 @session_router.post("/stop", response_model=StopSportsSessionRequestModel,
                      dependencies=[Security(authorized, scopes=[PermissionEnum.MANAGE_SESSION.code])])
-async def stop(model: StopSportsSessionRequestModel, db: Session = Depends(get_db)):
-    session = SessionService().stop(model, db)
+async def stop(model: StopSportsSessionRequestModel, db: Session = Depends(get_db), user_id: int = Depends(get_current_user_id)):
+    session = SessionService().stop(user_id, model, db)
     return session
 
 
