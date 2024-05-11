@@ -1,7 +1,7 @@
 from typing import List
 from sqlalchemy.orm import Session
 from app.modules.session.aplication.schemas import RegisterSportsSessionResponseModel, StartSportsSessionRequestModel, StartSportsSessionResponseModel, StopSportsSessionResponseModel
-from app.modules.session.aplication.schemas.session_schema import RegisterSportsSessionModel, StopSportsSessionRequestModel
+from app.modules.session.aplication.schemas.session_schema import RegisterSportsSessionModel, SportsSessionResponseModel, StopSportsSessionRequestModel
 from app.modules.session.domain.repository import RegisterSessionRepository, StartSessionRepository, StopSessionRepository
 from app.modules.session.infrastructure.factories import RepositoryFactory
 from app.modules.sport_man.aplication.service import SportsManService
@@ -61,3 +61,8 @@ class SessionService(Service):
     def register(self,model: RegisterSportsSessionModel, db: Session) -> RegisterSportsSessionResponseModel:
         repository = self.repository_factory.create_object(RegisterSessionRepository)
         return repository.create(model, db)
+
+
+    def get_by_id(self,id_session: int ,db: Session) -> SportsSessionResponseModel:
+        repository = self.repository_factory.create_object(StartSessionRepository)
+        return repository.get_by_id(id_session, db)

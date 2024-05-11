@@ -91,7 +91,9 @@ class TrainingRepositoryPostgres(TrainingRepository):
             training.name = entity.name
             training.description = entity.description
             training.sportsman_id = entity.sportsman_id
-            training.sport = entity.sport.value
+            if isinstance(entity.sport, SportPreference):
+                sport_index = list(SportPreference).index(entity.sport)
+                training.sport = sport_index + 1            
             training.intensity = entity.intensity.value
             training.duration = entity.duration
             training.is_inside_house = entity.is_inside_house
