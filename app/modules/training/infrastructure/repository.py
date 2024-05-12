@@ -114,6 +114,8 @@ class TrainingRepositoryPostgres(TrainingRepository):
     def get_by_sportsman_id(self, sportsman_id: int, db: Session) -> List[TrainingResponseDTO]:
         try:
             trainings = db.query(Training).filter(Training.sportsman_id == sportsman_id).all()
+            for training in trainings:
+                training.sport = self.__convert_sport_preference(training)
             return trainings
         except SQLAlchemyError as e:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
