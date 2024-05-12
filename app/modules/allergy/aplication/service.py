@@ -55,7 +55,7 @@ class NutritionalInformationService:
 
         if nutritional_information.food_preference:
             sport_man_service = SportsManService()
-            sport_man = SportsManRequestDTO(user_id=sport_man_id, food_preference=nutritional_information.food_preference)
+            sport_man_profile = SportsManRequestDTO(user_id=user_id, food_preference=nutritional_information.food_preference)
             sport_man_service.update_sportsmen(sport_man_id, sport_man, db)
 
         return nutritional_information        
