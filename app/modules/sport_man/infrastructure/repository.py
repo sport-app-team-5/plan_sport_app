@@ -2,9 +2,9 @@ from typing import List
 from fastapi import HTTPException, status
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
-from app.modules.sport_man.aplication.dto import SportsManResponseDTO, SportManResponseProfileSportDTO, \
+from app.modules.sport_man.aplication.dto import SportResponseIndicatorsProfileDTO, SportsManResponseDTO, SportManResponseProfileSportDTO, \
     InjuryResponseDTO, SportManResponseProfileDTO
-from app.modules.sport_man.domain.entities import SportsMan, Injuries, SportManInjury, Subscription
+from app.modules.sport_man.domain.entities import SportProfile, SportsMan, Injuries, SportManInjury, Subscription
 from app.modules.sport_man.domain.enum.food_preference_enum import FoodPreference
 from app.modules.sport_man.domain.enum.trining_goal_enum import TrainingGoal
 from app.modules.sport_man.domain.repository import UserRepository
@@ -154,10 +154,12 @@ class UserRepositoryPostgres(UserRepository):
             for injury in sports_men.injuries:
                 injuries.append(injury.injury.name)
 
-            return SportManResponseProfileDTO(id=sports_men.id, sport_preference=sports_men.sport_preference, injuries=injuries,
+            return SportManResponseProfileDTO(id=sports_men.id, sport_preference=sports_men.sport_preference,
+                                              injuries=injuries,
                                               exercise_experience=sports_men.exercise_experience,
                                               time_dedication_sport=sports_men.time_dedication_sport,
-                                              risk=sports_men.risk)
+                                              risk=sports_men.risk, birth_year=sports_men.birth_year,
+                                              height=sports_men.height, weight=sports_men.weight)
         except SQLAlchemyError as e:
             raise HTTPException(status_code=502, detail=str(e))
 
@@ -171,3 +173,33 @@ class UserRepositoryPostgres(UserRepository):
             return sport_man
         except SQLAlchemyError as e:
             raise HTTPException(status_code=502, detail=str(e))
+    
+    
+    def create_sport_indicators_profile(self, user_id: int, ftp:str, vo2_max: str, training_time: str,  db: Session) -> SportManResponseProfileSportDTO:
+        try:
+            sport_man = self.__validate_exist_sport_men(user_id, db)
+            
+            training_time_parts = training_time.split(':')
+            minutes = int(training_time_parts[1])
+            seconds = int(training_time_parts[2])
+            training_time_double = minutes + seconds / 60       
+
+            sport_profile = SportProfile(ftp=ftp, vo2_max=vo2_max, training_time=training_time_double )
+            sport_man.sport_profile_id = sport_profile.id
+
+            db.add(sport_profile)
+            db.commit()
+            return sport_profile
+        except SQLAlchemyError as e:
+            db.rollback()
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+
+    def get_indicator_profile_by_user_id(self, user_id: int, db: Session) -> SportResponseIndicatorsProfileDTO:
+        try:
+            sport_man = self.__validate_exist_sport_men(user_id, db)
+            sport_profile = db.query(SportProfile).filter(SportProfile.id == sport_man.sport_profile_id).first()
+            return sport_profile
+        except SQLAlchemyError as e:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+

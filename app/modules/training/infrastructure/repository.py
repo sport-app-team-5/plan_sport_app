@@ -91,7 +91,9 @@ class TrainingRepositoryPostgres(TrainingRepository):
             training.name = entity.name
             training.description = entity.description
             training.sportsman_id = entity.sportsman_id
-            training.sport = entity.sport.value
+            if isinstance(entity.sport, SportPreference):
+                sport_index = list(SportPreference).index(entity.sport)
+                training.sport = sport_index + 1            
             training.intensity = entity.intensity.value
             training.duration = entity.duration
             training.is_inside_house = entity.is_inside_house
@@ -112,6 +114,8 @@ class TrainingRepositoryPostgres(TrainingRepository):
     def get_by_sportsman_id(self, sportsman_id: int, db: Session) -> List[TrainingResponseDTO]:
         try:
             trainings = db.query(Training).filter(Training.sportsman_id == sportsman_id).all()
+            for training in trainings:
+                training.sport = self.__convert_sport_preference(training)
             return trainings
         except SQLAlchemyError as e:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))

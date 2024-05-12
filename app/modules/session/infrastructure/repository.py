@@ -3,6 +3,7 @@ from fastapi import HTTPException, status
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 from app.modules.session.aplication.schemas import RegisterSportsSessionResponseModel, StartSportsSessionResponseModel, StopSportsSessionResponseModel
+from app.modules.session.aplication.schemas.session_schema import SportsSessionResponseModel
 from app.modules.session.domain.model import SportsSession, Monitoring
 from app.modules.session.domain.repository import RegisterSessionRepository, StartSessionRepository, StopSessionRepository
 
@@ -26,9 +27,9 @@ class StartSessionRepositoryPostgres(StartSessionRepository):
             print(str(e))
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
-    def get_by_id(self, entity_id: int, db: Session) -> StartSportsSessionResponseModel:
+    def get_by_id(self, session_id: str, db: Session) -> SportsSessionResponseModel:
         try:
-            session = db.query(SportsSession).filter(SportsSession.id == entity_id).first()
+            session = db.query(SportsSession).filter(SportsSession.id == session_id).first()
             if session:
                 return session
             else:
@@ -76,6 +77,52 @@ class StopSessionRepositoryPostgres(StopSessionRepository):
 
     def delete(self, entity_id: int, db: Session) -> StopSportsSessionResponseModel:
         raise NotImplementedError
+    
+    def create_sport_indicators(self, weight: int, entity: SportsSession, db: Session) -> StopSportsSessionResponseModel:
+        try:
+            average_ftp = self.calculate_average_ftp(entity.id, db)            
+            vo2_max = self.calculate_vo2_max(weight, entity.time)
+
+            entity.ftp = str(int(average_ftp))
+            entity.vo2max = str(int(vo2_max))
+
+            return entity
+        except SQLAlchemyError as e:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        
+    
+    def calculate_average_ftp(self, session_id: int, db: Session) -> float:
+        try:
+            monitoring_records = db.query(Monitoring).filter(Monitoring.session_id == session_id).all()
+            ftp_values = [record.value for record in monitoring_records]
+            if len(ftp_values) > 0:                
+                average_ftp = sum(ftp_values) / len(ftp_values)
+                return average_ftp
+            else:
+                raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="No monitoring records found")
+        except SQLAlchemyError as e:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        
+    def calculate_vo2_max(self, sportman_weight: float, session_duration: int) -> float:
+        try:
+            oxigin_consumption = 3.5
+
+            weight = sportman_weight
+            duration = session_duration
+            duration_parts = duration.split(':')
+            minutes = int(duration_parts[1])
+            seconds = int(duration_parts[2])
+            duration_parts_double = minutes + seconds / 60
+
+            velocity = 15
+
+            met = (weight * velocity) / duration_parts_double
+
+            vo2_max = met / oxigin_consumption
+
+            return vo2_max
+        except SQLAlchemyError as e:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 class RegisterSessionRepositoryPostgres(RegisterSessionRepository):
     def get_by_id(self, entity_id: int, db: Session) -> RegisterSportsSessionResponseModel:

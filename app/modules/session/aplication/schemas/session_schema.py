@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 from pydantic import BaseModel, ConfigDict, EmailStr
 from app.seedwork.domain.entities import Entity
 
@@ -15,6 +15,13 @@ class StartSportsSessionRequestModel(BaseModel):
 
 class StartSportsSessionResponseModel(BaseModel):
     id: str
+    model_config = ConfigDict(from_attributes=True)
+
+class SportsSessionResponseModel(BaseModel):
+    id: str
+    training_plan_id: int
+    sportsman_id: int
+    time: str
     model_config = ConfigDict(from_attributes=True)
 
 class RegisterSportsSessionModel(BaseModel):
@@ -41,6 +48,9 @@ class RegisterSportsSessionResponseModel(BaseModel):
 class StopSportsSessionRequestModel(BaseModel):
     id: str
     time: str
+    weight: Optional[int] = None
+    ftp: Optional[str] = None
+    vo2max: Optional[str] = None
     model_config = ConfigDict(json_schema_extra={
         "example": {
             "id": "6ecd8c99-4036-403d-bf84-cf8400f67836",
@@ -50,4 +60,13 @@ class StopSportsSessionRequestModel(BaseModel):
 
 class StopSportsSessionResponseModel(BaseModel):
     id: str
+    ftp: str
+    vo2max: str
     model_config = ConfigDict(from_attributes=True)
+
+class SportInformationDTO(BaseModel):
+    weight: float
+    time: float
+    intensity: str
+    type: str
+    allergies: List[str]

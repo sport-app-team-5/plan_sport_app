@@ -8,7 +8,7 @@ class SportsSession(Base):
     __tablename__ = 'training_plan_sportman'
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, index=True, nullable=False, unique=True )
-    time: Mapped[str] = mapped_column(String(50), nullable=False)
+    time: Mapped[str] = mapped_column(String(50), nullable=True)
     status: Mapped[str] = mapped_column(String(20), nullable=False)
     sportsman_id:  Mapped[int] = mapped_column(Integer, ForeignKey('sportsman.id'), nullable=False)
     training_plan_id: Mapped[int] = mapped_column(Integer, ForeignKey('training_plan.id'), nullable=False)
