@@ -163,9 +163,9 @@ class UserRepositoryPostgres(UserRepository):
         except SQLAlchemyError as e:
             raise HTTPException(status_code=502, detail=str(e))
 
-    def update_suscription_id(self, user_id: int, suscription_type: str, db: Session):
+    def update_suscription_id(self, sportman_id: int, suscription_type: str, db: Session):
         try:
-            sport_man = db.query(SportsMan).filter(SportsMan.user_id == user_id).first()
+            sport_man = db.query(SportsMan).filter(SportsMan.id == sportman_id).first()
             subscription = db.query(Subscription).filter(Subscription.type == suscription_type).first()
             sport_man.subscription_id = subscription.id
             db.add(sport_man)
