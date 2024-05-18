@@ -53,7 +53,7 @@ class SessionService(Service):
         sport_profile = sport_service.create_sport_indicators_profile(user_id, sport_indicators_created.ftp, sport_indicators_created.vo2max, sport_indicators_created.time, db)
 
         sportman.sport_profile_id = sport_profile.id
-        sport_service.update_sportsmen(user_id, sportman, db)
+        sport_service.update_sportsmen(sportman.id, sportman, db)
         return sport_indicators_created
     
 

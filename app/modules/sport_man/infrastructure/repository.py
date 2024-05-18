@@ -159,7 +159,7 @@ class UserRepositoryPostgres(UserRepository):
                                               exercise_experience=sports_men.exercise_experience,
                                               time_dedication_sport=sports_men.time_dedication_sport,
                                               risk=sports_men.risk, birth_year=sports_men.birth_year,
-                                              height=sports_men.height, weight=sports_men.weight)
+                                              height=sports_men.height, weight=sports_men.weight, subscription_id=sports_men.subscription_id)
         except SQLAlchemyError as e:
             raise HTTPException(status_code=502, detail=str(e))
 

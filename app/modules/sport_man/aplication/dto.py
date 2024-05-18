@@ -46,7 +46,7 @@ class SportsManResponseDTO(BaseModel):
     height: Optional[int] = None
     weight: Optional[int] = None
     body_mass_index: Optional[float] = None
-    sport_preference: Optional[SportPreference] = None
+    sport_preference: Optional[SportPreference] = None    
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -145,6 +145,7 @@ class SportManResponseProfileDTO(BaseModel):
     birth_year: int
     height: int
     weight: int
+    subscription_id: Optional[int] = None
 
 
 
