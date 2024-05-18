@@ -142,4 +142,14 @@ class SportManResponseProfileDTO(BaseModel):
     exercise_experience: str
     time_dedication_sport: str
     risk: str
-    
+    birth_year: int
+    height: int
+    weight: int
+
+
+
+class SportResponseIndicatorsProfileDTO(BaseModel):
+    id: int
+    ftp: str
+    vo2_max: str    
+    model_config = ConfigDict(from_attributes=True)

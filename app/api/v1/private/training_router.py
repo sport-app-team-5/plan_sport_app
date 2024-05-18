@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Depends, Security, status
+from fastapi import APIRouter, Depends, Security, status, Query
 from sqlalchemy.orm import Session
 from app.config.db import get_db
 from app.modules.auth.domain.enums.permission_enum import PermissionEnum
@@ -27,9 +27,9 @@ def get_events_by_sportsman_id(user_id: int = Depends(get_current_user_id), db: 
 
 @training_router.get("", response_model=List[TrainingDTO],
                      dependencies=[Security(authorized, scopes=[PermissionEnum.MANAGE_SESSION.code])])
-def get_training(db: Session = Depends(get_db)):
+def get_training(is_inside_house: bool = Query(None), db: Session = Depends(get_db)):
     service = TrainingService()
-    return service.get_training(db)
+    return service.get_training(is_inside_house, db)
 
 
 @training_router.get("/{training_id}", response_model=TrainingDTO,
