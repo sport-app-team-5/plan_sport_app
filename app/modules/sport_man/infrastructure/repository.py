@@ -2,9 +2,12 @@ from typing import List
 from fastapi import HTTPException, status
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
-from app.modules.sport_man.aplication.dto import SportResponseIndicatorsProfileDTO, SportsManResponseDTO, SportManResponseProfileSportDTO, \
-    InjuryResponseDTO, SportManResponseProfileDTO
-from app.modules.sport_man.domain.entities import SportProfile, SportsMan, Injuries, SportManInjury, Subscription
+
+from app.modules.injury.domain.entities import SportManInjury
+from app.modules.sport_man.aplication.dto import (SportResponseIndicatorsProfileDTO, SportsManResponseDTO,
+                                                  SportManResponseProfileSportDTO, \
+                                                  InjuryResponseDTO, SportManResponseProfileDTO)
+from app.modules.sport_man.domain.entities import SportProfile, SportsMan, Subscription
 from app.modules.sport_man.domain.enum.food_preference_enum import FoodPreference
 from app.modules.sport_man.domain.enum.trining_goal_enum import TrainingGoal
 from app.modules.sport_man.domain.repository import UserRepository
@@ -76,34 +79,32 @@ class UserRepositoryPostgres(UserRepository):
             classification = SportManRisk.LOWRISK.value
         return classification
 
-    def calculateRisk(self, year_of_birth, muscle_mass_index)-> SportManRisk:
+    def calculateRisk(self, year_of_birth, muscle_mass_index) -> SportManRisk:
         current_year = datetime.now().year
         age = current_year - year_of_birth
-        
+
         risk_limits = {
             "<18": {"high": 30, "medium": 25, "low": 18.5},
             "18-30": {"high": 30, "medium": 25, "low": 20},
             "30-50": {"high": 30, "medium": 26, "low": 21},
             ">50": {"high": 30, "medium": 27, "low": 22}
         }
-        
+
         classification = SportManRisk.WITOOUTRISK.value
-        
+
         age_ranges = [
             ("<18", lambda age: age < 18),
             ("18-30", lambda age: 18 <= age < 30),
             ("30-50", lambda age: 30 <= age < 50),
             (">50", lambda age: age >= 50),
         ]
-        
+
         for age_range, age_check in age_ranges:
             if age_check(age):
                 classification = self.calculate_clasification(muscle_mass_index, risk_limits[age_range])
                 break
 
         return classification
-
-
 
     def create_injury(self, id_injury: int, sportman_id: int, db: Session) -> InjuryResponseDTO:
         try:
@@ -173,7 +174,7 @@ class UserRepositoryPostgres(UserRepository):
             sports_men = db.query(SportsMan).filter(SportsMan.user_id == user_id).first()
             if sports_men.risk == None:
                 raise HTTPException(status_code=status.HTTP_206_PARTIAL_CONTENT, detail="Sport man not have risk")
-                
+
             injuries = []
             for injury in sports_men.injuries:
                 injuries.append(injury.injury.name)
@@ -183,7 +184,8 @@ class UserRepositoryPostgres(UserRepository):
                                               exercise_experience=sports_men.exercise_experience,
                                               time_dedication_sport=sports_men.time_dedication_sport,
                                               risk=sports_men.risk, birth_year=sports_men.birth_year,
-                                              height=sports_men.height, weight=sports_men.weight, subscription_id=sports_men.subscription_id)
+                                              height=sports_men.height, weight=sports_men.weight,
+                                              subscription_id=sports_men.subscription_id)
         except SQLAlchemyError as e:
             raise HTTPException(status_code=502, detail=str(e))
 
@@ -197,18 +199,18 @@ class UserRepositoryPostgres(UserRepository):
             return sport_man
         except SQLAlchemyError as e:
             raise HTTPException(status_code=502, detail=str(e))
-    
-    
-    def create_sport_indicators_profile(self, user_id: int, ftp:str, vo2_max: str, training_time: str,  db: Session) -> SportManResponseProfileSportDTO:
+
+    def create_sport_indicators_profile(self, user_id: int, ftp: str, vo2_max: str, training_time: str,
+                                        db: Session) -> SportManResponseProfileSportDTO:
         try:
             sport_man = self.__validate_exist_sport_men(user_id, db)
-            
+
             training_time_parts = training_time.split(':')
             minutes = int(training_time_parts[1])
             seconds = int(training_time_parts[2])
-            training_time_double = minutes + seconds / 60       
+            training_time_double = minutes + seconds / 60
 
-            sport_profile = SportProfile(ftp=ftp, vo2_max=vo2_max, training_time=training_time_double )
+            sport_profile = SportProfile(ftp=ftp, vo2_max=vo2_max, training_time=training_time_double)
             sport_man.sport_profile_id = sport_profile.id
 
             db.add(sport_profile)
@@ -218,7 +220,6 @@ class UserRepositoryPostgres(UserRepository):
             db.rollback()
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
-
     def get_indicator_profile_by_user_id(self, user_id: int, db: Session) -> SportResponseIndicatorsProfileDTO:
         try:
             sport_man = self.__validate_exist_sport_men(user_id, db)
@@ -226,4 +227,3 @@ class UserRepositoryPostgres(UserRepository):
             return sport_profile
         except SQLAlchemyError as e:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
-

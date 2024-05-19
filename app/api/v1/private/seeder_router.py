@@ -11,14 +11,14 @@ authorized = auth_service.authorized
 seeder_router = APIRouter(
     prefix='/seeders',
     tags=["Seeders"],
-    dependencies=[Depends(oauth2_scheme)]
+    # dependencies=[Depends(oauth2_scheme)]
 )
 
 
 @seeder_router.post("", status_code=status.HTTP_201_CREATED)
 async def run_seeders(password: str = Query(..., min_length=3), db: Session = Depends(get_db)) -> dict:
-    if password == env.SECRET_KEY:
+    # if password == env.SECRET_KEY:
         all_seeders(db)
         return {"message": "Seeders created"}
-    else:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Unauthorized')
+    # else:
+    #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Unauthorized')
