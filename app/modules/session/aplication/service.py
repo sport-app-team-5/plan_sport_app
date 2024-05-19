@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from app.config.api import settings
+from app.config.env import env
 from app.modules.session.aplication.schemas import RegisterSportsSessionResponseModel, StartSportsSessionRequestModel, \
     StartSportsSessionResponseModel, StopSportsSessionResponseModel
 from app.modules.session.aplication.schemas.session_schema import RegisterSportsSessionModel, \
@@ -47,7 +47,7 @@ class SessionService(Service):
         model.weight = sportman.weight
 
         repository = self.repository_factory.create_object(StopSessionRepository)
-        self.send_to_pub_sub(model, settings.TOPIC_ARN)
+        self.send_to_pub_sub(model, env.TOPIC_ARN)
 
         repository.update(model.id, model, db)
         sport_indicators_created = repository.create_sport_indicators(model.weight, model, db)

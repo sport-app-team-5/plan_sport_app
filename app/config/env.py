@@ -18,7 +18,7 @@ class Env:
     DATABASE_URL = f"{DB_ENGINE}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:" \
                    f"{DB_PORT}/{DB_NAME}"
 
-    TOPIC_ARN = os.getenv('TOPIC_ARN')
+    TOPIC_ARN = os.getenv('TOPIC_ARN', 'arn::example')
 
 
 env = Env

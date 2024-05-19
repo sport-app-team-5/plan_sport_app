@@ -1,7 +1,10 @@
 from datetime import datetime
+from unittest.mock import patch
+
 from fastapi import Response
 import pytest
 from app.modules.allergy.domain.entities import Allergy, AllergySportMan
+from app.modules.session.aplication.service import SessionService
 from app.modules.session.domain.model import Monitoring, SportsSession
 from app.modules.sport_man.domain.entities import SportsMan
 from app.modules.training.domain.entities import Training
@@ -83,7 +86,9 @@ class TestSessionRouter:
         response = register_session(client, headers, session_register_data)
         assert response.status_code == 200
 
-    def test_stop_session(self, client, headers, sport_man_seeders, training_plan_seeders):
+    @patch.object(SessionService, 'send_to_pub_sub')
+    def test_stop_session(self, mock_send, client, headers, sport_man_seeders, training_plan_seeders):
+        mock_send.return_value = True
         response = stop_session(client, headers, session_stop_data)
         assert response.status_code == 200
 
