@@ -31,9 +31,7 @@ class SessionService(Service):
 
     def send_to_pub_sub(self, message: StopSportsSessionRequestModel, topic: str):
         try:
-            sns_client = boto3.client('sns', region_name='us-east-1',
-                                      aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                                      aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+            sns_client = boto3.client('sns')
             mensaje_json = message.model_dump_json()
             sns_client.publish(TopicArn=topic, Message=mensaje_json)
 
