@@ -1,7 +1,8 @@
 from fastapi import Response
 import pytest
 from app.modules.allergy.domain.entities import Allergy
-from app.modules.sport_man.domain.entities import SportProfile, SportsMan, Injuries, SportManInjury, Subscription
+from app.modules.injury.domain.entities import SportManInjury, Injury
+from app.modules.sport_man.domain.entities import SportProfile, SportsMan, Subscription
 
 
 @pytest.fixture
@@ -22,8 +23,8 @@ def allergy_seeders(db) -> None:
 
 @pytest.fixture
 def injuries_seeders(db) -> None:
-    db.add(Injuries(name="Lesion de pie", description="Lesion de pie", severity=1))
-    db.add(Injuries(name="Lesion de muñeca", description="Lesion de muñeca", severity=2))
+    db.add(Injury(name="Lesion de pie", description="Lesion de pie", severity=1))
+    db.add(Injury(name="Lesion de muñeca", description="Lesion de muñeca", severity=2))
     db.commit()
 
 
@@ -32,8 +33,8 @@ def profile_seeders(db) -> None:
     db.add(SportsMan(user_id=1, sport_preference='Atletismo', exercise_experience='Si',
                      time_dedication_sport='1 a 3 horas', risk='Riesgo Bajo', birth_year=2000,
                      height=100, weight=100))
-    db.add(Injuries(name="Lesion de pie", description="Lesion de pie", severity=1))
-    db.add(Injuries(name="Lesion de muñeca", description="Lesion de muñeca", severity=2))
+    db.add(Injury(name="Lesion de pie", description="Lesion de pie", severity=1))
+    db.add(Injury(name="Lesion de muñeca", description="Lesion de muñeca", severity=2))
     db.commit()
     db.add(SportManInjury(id_sporman=1, id_injury=1))
     db.commit()
