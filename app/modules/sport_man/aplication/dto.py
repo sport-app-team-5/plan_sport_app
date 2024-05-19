@@ -146,6 +146,7 @@ class SportManResponseProfileDTO(BaseModel):
     birth_year: int
     height: int
     weight: int
+    subscription_id: Optional[int] = None
 
 
 
