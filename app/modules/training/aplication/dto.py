@@ -55,3 +55,13 @@ class TrainingResponseDTO(BaseModel):
     sport: SportPreference
     intensity: Intensity
     duration: int
+
+
+class TrainingResDTO(BaseModel):
+    name: str
+    intensity: Intensity
+
+
+class TrainingPlanResponseDTO(BaseModel):
+    time: str
+    training_plan: TrainingResDTO

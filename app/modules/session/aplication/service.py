@@ -11,6 +11,7 @@ from app.modules.sport_man.aplication.service import SportsManService
 from app.seedwork.application.services import Service
 import uuid
 import boto3
+from app.config.env import env
 
 
 class SessionService(Service):
@@ -32,6 +33,9 @@ class SessionService(Service):
     def send_to_pub_sub(self, message: StopSportsSessionRequestModel, topic: str):
         sns_client = boto3.client('sns')
         try:
+            sns_client = boto3.client('sns', region_name='us-east-1', 
+                           aws_access_key_id=env.AWS_ACCESS_KEY_ID,
+                           aws_secret_access_key=env.AWS_SECRET_ACCESS_KEY)
             mensaje_json = message.model_dump_json()
             sns_client.publish(TopicArn=topic, Message=mensaje_json)
         except Exception as e:
@@ -47,7 +51,11 @@ class SessionService(Service):
         model.weight = sportman.weight
 
         repository = self.repository_factory.create_object(StopSessionRepository)
-        self.send_to_pub_sub(model, env.TOPIC_ARN)
+        self.send_to_pub_sub(model,env.TOPIC_ARN)
+        
+        repository.update(model.id,model,db)
+        sport_indicators_created = repository.create_sport_indicators(model.weight, model,db)        
+        sport_profile = sport_service.create_sport_indicators_profile(user_id, sport_indicators_created.ftp, sport_indicators_created.vo2max, sport_indicators_created.time, db)
 
         repository.update(model.id, model, db)
         sport_indicators_created = repository.create_sport_indicators(model.weight, model, db)
