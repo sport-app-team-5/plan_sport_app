@@ -116,6 +116,77 @@ class TestSportManRouter:
         result = update_sportman_profile_information(client, headers, 1, data)
         assert result.status_code == 200
 
+    def test_update_sportman_profile_information_risk_low(self, client, headers, injuries_seeders, sport_man_seeders):
+        data = {
+            "id": 1,
+            "height": 175,
+            "weight": 70,
+            "birth_year": 1964,
+            "injuries": [1, 2],
+            "sport_preference": "Atletismo",
+            "exercise_experience": "Si",
+            "time_dedication_sport": "1 a 3 horas"
+        }
+        result = update_sportman_profile_information(client, headers, 1, data)
+        response = get_sportsman_by_user_id(client, 1, headers=headers)
+        assert response.status_code == 200
+        assert response.json()["risk"] == "Riesgo Bajo"
+
+        assert result.status_code == 200
+
+    def test_update_sportman_profile_information_without_risk(self, client, headers, injuries_seeders, sport_man_seeders):
+        data = {
+            "id": 1,
+            "height": 180,
+            "weight": 65,
+            "birth_year": 1964,
+            "injuries": [1, 2],
+            "sport_preference": "Atletismo",
+            "exercise_experience": "Si",
+            "time_dedication_sport": "1 a 3 horas"
+        }
+        result = update_sportman_profile_information(client, headers, 1, data)
+        response = get_sportsman_by_user_id(client, 1, headers=headers)
+        assert response.status_code == 200
+        assert response.json()["risk"] == "Sin Riesgo"
+        assert result.status_code == 200
+
+    def test_update_sportman_profile_information_risk_medium(self, client, headers, injuries_seeders, sport_man_seeders):
+        data = {
+            "id": 1,
+            "height": 175,
+            "weight": 80,
+            "birth_year": 1989,
+            "injuries": [1, 2],
+            "sport_preference": "Atletismo",
+            "exercise_experience": "Si",
+            "time_dedication_sport": "1 a 3 horas"
+        }
+        result = update_sportman_profile_information(client, headers, 1, data)
+        response = get_sportsman_by_user_id(client, 1, headers=headers)
+        assert response.status_code == 200
+        assert response.json()["risk"] == "Riesgo Medio"
+        assert result.status_code == 200
+
+    def test_update_sportman_profile_information_risk_high(self, client, headers, injuries_seeders, sport_man_seeders):
+        data = {
+            "id": 1,
+            "height": 165,
+            "weight": 90,
+            "birth_year": 2008,
+            "injuries": [1, 2],
+            "sport_preference": "Atletismo",
+            "exercise_experience": "Si",
+            "time_dedication_sport": "1 a 3 horas"
+        }
+        result = update_sportman_profile_information(client, headers, 1, data)
+        response = get_sportsman_by_user_id(client, 1, headers=headers)
+        assert response.status_code == 200
+        assert response.json()["risk"] == "Riesgo alto"
+        assert result.status_code == 200
+
+    
+
     def test_update_sportman_profile_information_when_missing_attributes(self, client, headers, injuries_seeders,
                                                                          sport_man_seeders):
         data = {
