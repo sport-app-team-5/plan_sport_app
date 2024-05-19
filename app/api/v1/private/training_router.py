@@ -4,7 +4,8 @@ from sqlalchemy.orm import Session
 from app.config.db import get_db
 from app.modules.auth.domain.enums.permission_enum import PermissionEnum
 from app.modules.auth.domain.service import AuthService
-from app.modules.training.aplication.dto import TrainingDTO, TrainingUpdateDTO, TrainingResponseDTO
+from app.modules.training.aplication.dto import TrainingDTO, TrainingUpdateDTO, TrainingResponseDTO, \
+    TrainingPlanResponseDTO
 from app.modules.training.aplication.service import TrainingService
 from app.seedwork.presentation.jwt import oauth2_scheme, get_current_user_id
 
@@ -15,6 +16,14 @@ training_router = APIRouter(
     tags=["Trainings"],
     dependencies=[Depends(oauth2_scheme)]
 )
+
+
+@training_router.get("/plan/sportsman", response_model=List[TrainingPlanResponseDTO],
+                     dependencies=[Security(authorized, scopes=[PermissionEnum.READ_SERVICE.code])])
+def get_trainings_plan_by_sportsman_id(user_id: int = Depends(get_current_user_id), db: Session = Depends(get_db)):
+    training_service = TrainingService()
+    trainings = training_service.get_training_plan_by_sportsman_id(user_id, db)
+    return trainings
 
 
 @training_router.get("/sportsman", response_model=List[TrainingResponseDTO],

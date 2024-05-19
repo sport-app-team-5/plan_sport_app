@@ -2,8 +2,11 @@ from typing import List
 from fastapi import HTTPException, status
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
+
+from app.modules.session.domain.model import SportsSession
 from app.modules.sport_man.domain.enum.sport_preference_enum import SportPreference
-from app.modules.training.aplication.dto import TrainingDTO, TrainingUpdateDTO, TrainingResponseDTO
+from app.modules.training.aplication.dto import TrainingDTO, TrainingUpdateDTO, TrainingResponseDTO, \
+    TrainingPlanResponseDTO
 from app.modules.training.domain.entities import Training
 from app.modules.training.domain.enum.intensity_enum import Intensity
 from app.modules.training.domain.repository import TrainingRepository
@@ -116,6 +119,13 @@ class TrainingRepositoryPostgres(TrainingRepository):
             trainings = db.query(Training).filter(Training.sportsman_id == sportsman_id).all()
             for training in trainings:
                 training.sport = self.__convert_sport_preference(training)
+            return trainings
+        except SQLAlchemyError as e:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+    def get_plan_by_sportsman_id(self, sportsman_id: int, db: Session) -> List[TrainingPlanResponseDTO]:
+        try:
+            trainings = db.query(SportsSession).filter(SportsSession.sportsman_id == sportsman_id).all()
             return trainings
         except SQLAlchemyError as e:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
