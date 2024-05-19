@@ -12,7 +12,8 @@ def injuries_seed(db: Session):
         Injuries(name="Dolor en la espalda", description="Dolor en la espalda",severity=1),
         Injuries(name="Quemaduras en la espalda", description="Quemaduras en la espalda",severity=1),
         Injuries(name="Ampollas miembros inferiores", description="Ampollas en miembros inferiores",severity=1),
-        Injuries(name="Ampollas miembros superiores", description="Ampollas en miembros superiores",severity=1)
+        Injuries(name="Ampollas miembros superiores", description="Ampollas en miembros superiores",severity=1),
+        Injuries(name="Ninguna", description="Ninguna", severity=1)
 
     ]
     create_or_update(db, injuries_to_create)
