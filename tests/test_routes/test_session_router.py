@@ -3,7 +3,7 @@ from fastapi import Response
 import pytest
 from app.modules.allergy.domain.entities import Allergy, AllergySportMan
 from app.modules.session.domain.model import Monitoring, SportsSession
-from app.modules.sport_man.domain.entities import SportsMan, Injuries, SportManInjury, Subscription
+from app.modules.sport_man.domain.entities import SportsMan
 from app.modules.training.domain.entities import Training
 
 @pytest.fixture
