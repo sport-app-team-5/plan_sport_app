@@ -24,7 +24,7 @@ def __app() -> Generator[FastAPI, Any, None]:
 
 
 @pytest.fixture(scope="function")
-def db() -> Generator[SessionTesting, Any, None]: # type: ignore
+def db() -> Generator[SessionTesting, Any, None]:
     connection = engine.connect()
     transaction = connection.begin()
     session = SessionTesting(bind=connection)
@@ -35,7 +35,7 @@ def db() -> Generator[SessionTesting, Any, None]: # type: ignore
 
 
 @pytest.fixture(scope="function")
-def client(__app: FastAPI, db: SessionTesting) -> Generator[TestClient, Any, None]: # type: ignore
+def client(__app: FastAPI, db: SessionTesting) -> Generator[TestClient, Any, None]:
     def __get_test_db():
         yield db
 
@@ -46,7 +46,8 @@ def client(__app: FastAPI, db: SessionTesting) -> Generator[TestClient, Any, Non
         pass
 
     # noinspection PyUnresolvedReferences
-    app.dependency_overrides.update({get_db: __get_test_db, AuthService.authorized: __authorized, get_current_user_id: __get_current_user_id})
+    app.dependency_overrides.update({get_db: __get_test_db, AuthService.authorized: __authorized,
+                                     get_current_user_id: __get_current_user_id})
 
     with TestClient(__app) as client:
         yield client
