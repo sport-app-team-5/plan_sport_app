@@ -66,20 +66,44 @@ class UserRepositoryPostgres(UserRepository):
             db.rollback()
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
-    def calculateRisk(self, birth_year: int, body_mass_index: float) -> SportManRisk:
-        risk = SportManRisk.WITOOUTRISK.value
+    def calculate_clasification(self, muscle_mass_index, limits) -> SportManRisk:
+        classification = SportManRisk.WITOOUTRISK.value
+        if muscle_mass_index >= limits["high"]:
+            classification = SportManRisk.HIGHRISK.value
+        elif muscle_mass_index >= limits["medium"]:
+            classification = SportManRisk.MEDIUMRISK.value
+        elif muscle_mass_index >= limits["low"]:
+            classification = SportManRisk.LOWRISK.value
+        return classification
+
+    def calculateRisk(self, year_of_birth, muscle_mass_index)-> SportManRisk:
         current_year = datetime.now().year
-        age = current_year - birth_year
-        if (age > 70 and body_mass_index < 16.5) or (age > 70 and body_mass_index > 30):
-            risk = SportManRisk.HIGHRISK.value
+        age = current_year - year_of_birth
+        
+        risk_limits = {
+            "<18": {"high": 30, "medium": 25, "low": 18.5},
+            "18-30": {"high": 30, "medium": 25, "low": 20},
+            "30-50": {"high": 30, "medium": 26, "low": 21},
+            ">50": {"high": 30, "medium": 27, "low": 22}
+        }
+        
+        classification = SportManRisk.WITOOUTRISK.value
+        
+        age_ranges = [
+            ("<18", lambda age: age < 18),
+            ("18-30", lambda age: 18 <= age < 30),
+            ("30-50", lambda age: 30 <= age < 50),
+            (">50", lambda age: age >= 50),
+        ]
+        
+        for age_range, age_check in age_ranges:
+            if age_check(age):
+                classification = self.calculate_clasification(muscle_mass_index, risk_limits[age_range])
+                break
 
-        elif (55 < age <= 70 and 16.5 <= body_mass_index <= 18.5) or (55 < age <= 70 and 25 <= body_mass_index <= 30):
-            risk = SportManRisk.MEDIUMRISK.value
+        return classification
 
-        elif age <= 55 and 18.5 < body_mass_index < 25:
-            risk = SportManRisk.WITOOUTRISK.value
 
-        return risk
 
     def create_injury(self, id_injury: int, sportman_id: int, db: Session) -> InjuryResponseDTO:
         try:
@@ -159,7 +183,7 @@ class UserRepositoryPostgres(UserRepository):
                                               exercise_experience=sports_men.exercise_experience,
                                               time_dedication_sport=sports_men.time_dedication_sport,
                                               risk=sports_men.risk, birth_year=sports_men.birth_year,
-                                              height=sports_men.height, weight=sports_men.weight)
+                                              height=sports_men.height, weight=sports_men.weight, subscription_id=sports_men.subscription_id)
         except SQLAlchemyError as e:
             raise HTTPException(status_code=502, detail=str(e))
 
