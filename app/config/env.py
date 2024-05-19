@@ -18,7 +18,9 @@ class Env:
     DATABASE_URL = f"{DB_ENGINE}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:" \
                    f"{DB_PORT}/{DB_NAME}"
 
-    TOPIC_ARN = os.getenv('TOPIC_ARN', 'arn::example')
+    AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID') 
+    AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY') 
+    TOPIC_ARN = os.getenv('TOPIC_ARN') 
 
 
 env = Env
