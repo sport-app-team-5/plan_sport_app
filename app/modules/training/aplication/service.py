@@ -1,7 +1,8 @@
 from typing import List
 from sqlalchemy.orm import Session
 from app.modules.sport_man.aplication.service import SportsManService
-from app.modules.training.aplication.dto import TrainingDTO, TrainingUpdateDTO, TrainingResponseDTO
+from app.modules.training.aplication.dto import TrainingDTO, TrainingUpdateDTO, TrainingResponseDTO, \
+    TrainingPlanResponseDTO
 from app.modules.training.domain.repository import TrainingRepository
 from app.modules.training.infrastructure.factories import RepositoryFactory
 
@@ -37,3 +38,10 @@ class TrainingService:
         if sportsman:
             repository = self._repository_factory.create_object(TrainingRepository)
             return repository.get_by_sportsman_id(sportsman.id, db)
+
+    def get_training_plan_by_sportsman_id(self, user_id: int, db: Session) -> List[TrainingPlanResponseDTO]:
+        sportsman_service = SportsManService()
+        sportsman = sportsman_service.get_sportsmen_by_id(user_id, db)
+        if sportsman:
+            repository = self._repository_factory.create_object(TrainingRepository)
+            return repository.get_plan_by_sportsman_id(sportsman.id, db)
