@@ -30,16 +30,14 @@ class SessionService(Service):
         return repository.create(model, db, sportman.id)
 
     def send_to_pub_sub(self, message: StopSportsSessionRequestModel, topic: str):
+        sns_client = boto3.client('sns')
         try:
-            sns_client = boto3.client('sns')
             mensaje_json = message.model_dump_json()
             sns_client.publish(TopicArn=topic, Message=mensaje_json)
-
         except Exception as e:
             return f'Error: {str(e)}'
         finally:
             sns_client.close()
-            sns_client = None
 
     def stop(self, user_id: int, model: StopSportsSessionRequestModel, db: Session) -> StopSportsSessionResponseModel:
 
