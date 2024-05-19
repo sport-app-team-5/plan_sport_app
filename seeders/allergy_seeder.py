@@ -14,7 +14,8 @@ def allergies_seed(db: Session):
         Allergy(name="Fish", description="Allergy to fish"),
         Allergy(name="Tree nuts", description="Allergy to tree nuts"),
         Allergy(name="Wheat", description="Allergy to wheat"),
-        Allergy(name="Sesame", description="Allergy to sesame")
+        Allergy(name="Sesame", description="Allergy to sesame"),
+        Allergy(name="None", description="None")
     ]
     create_or_update(db, allergies_to_create)
     db.commit()
